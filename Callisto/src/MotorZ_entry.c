@@ -1,5 +1,5 @@
+#include <Callisto.h>
 #include "MotorZ.h"
-#include "Helix.h"
 
 /* MotorZ entry function */
 void MotorZ_entry(void)

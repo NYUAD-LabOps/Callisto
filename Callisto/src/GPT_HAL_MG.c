@@ -34,10 +34,10 @@
  *  By default, printf is disabled. To enable printf, enable the #define SEMI_HOSTING in the hal_entry.c and GPT_HAL_MG.c file
  */
 
+#include <Callisto.h>
 #include <GPT_HAL_MG.h>
 #include <stdio.h>
 #include "hal_data.h"
-#include "Helix.h"
 #define SEMI_HOSTING
 
 ssp_err_t error_handle(ssp_err_t err, const char *err_msg)
