@@ -1,9 +1,9 @@
 #include <Callisto.h>
-#include <MainThread.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include "CallistoMain.h"
 #include "math.h"
 //#include "hal_data.h"
 //#include <GPT_HAL_MG.h>

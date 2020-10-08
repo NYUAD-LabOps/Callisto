@@ -440,8 +440,8 @@
       <stack module="module.driver.timer_on_gpt.1224698307"/>
     </context>
     <context id="rtos.threadx.thread.1797549027">
-      <property id="_symbol" value="MainThread"/>
-      <property id="rtos.threadx.thread.name" value="MainThread"/>
+      <property id="_symbol" value="CallistoMain"/>
+      <property id="rtos.threadx.thread.name" value="CallistoMain"/>
       <property id="rtos.threadx.thread.stack" value="1024"/>
       <property id="rtos.threadx.thread.priority" value="1"/>
       <property id="rtos.threadx.thread.autostart" value="rtos.threadx.thread.autostart.enabled"/>

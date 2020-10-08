@@ -1,13 +1,13 @@
 /* generated thread header file - do not edit */
-#ifndef MAINTHREAD_H_
-#define MAINTHREAD_H_
+#ifndef CALLISTOMAIN_H_
+#define CALLISTOMAIN_H_
 #include "bsp_api.h"
 #include "tx_api.h"
 #include "hal_data.h"
 #ifdef __cplusplus
-extern "C" void MainThread_entry(void);
+extern "C" void CallistoMain_entry(void);
 #else
-extern void MainThread_entry(void);
+extern void CallistoMain_entry(void);
 #endif
 #ifdef __cplusplus
 extern "C"
@@ -16,4 +16,4 @@ extern "C"
 #ifdef __cplusplus
 } /* extern "C" */
 #endif
-#endif /* MAINTHREAD_H_ */
+#endif /* CALLISTOMAIN_H_ */

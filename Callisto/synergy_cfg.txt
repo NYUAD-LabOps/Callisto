@@ -571,9 +571,9 @@ Synergy Configuration
       Callback: gpt_1_callback
       Overflow Interrupt Priority: Priority 6
       
-  Thread "MainThread"
-    Symbol: MainThread
-    Name: MainThread
+  Thread "CallistoMain"
+    Symbol: CallistoMain
+    Name: CallistoMain
     Stack size (bytes): 1024
     Priority: 1
     Auto start: Enabled

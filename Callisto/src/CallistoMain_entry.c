@@ -1,9 +1,9 @@
 #include <Callisto.h>
+#include "CallistoMain.h"
 #include <GPT_HAL_MG.h>
-#include <MainThread.h>
 
-/* Main entry function */
-void MainThread_entry(void)
+/* Helix Main entry function */
+void CallistoMain_entry(void)
 {
     if (DEBUGGER)
         initialise_monitor_handles ();
@@ -12,7 +12,7 @@ void MainThread_entry(void)
 
     if (DEBUG)
     {
-        printf ("\nSecondary controller initializing...");
+        printf ("\nHelix slave initializing...");
     }
     initGlobalsBlock ();
 
