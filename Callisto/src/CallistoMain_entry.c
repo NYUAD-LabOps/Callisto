@@ -10,7 +10,7 @@ void CallistoMain_entry(void)
     /* TODO: add your own code here */
     ssp_err_t err = init_timers ();
 
-    if (DEBUG)
+    if (DEBUGGER)
     {
         printf ("\nHelix slave initializing...");
     }
@@ -26,7 +26,7 @@ void CallistoMain_entry(void)
 
     while (1)
     {
-        if (DEBUG)
+        if (DEBUGGER)
         {
             printf ("\nWaiting...");
         }

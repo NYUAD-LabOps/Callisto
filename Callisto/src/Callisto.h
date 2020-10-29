@@ -1,7 +1,7 @@
 #include "CallistoMain.h"
-#include <Ganymede.h>
+//#include <Ganymede.h>
 //#include "r_timer_api.h"
-#define DEBUGGER 0
+#define DEBUGGER 1
 #define DEBUG 0
 #define IPADDSTRING "192.168.10.182"
 #define NXD_MQTT_MAX_MESSAGE_LENGTH 50
