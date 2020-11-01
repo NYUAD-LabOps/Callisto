@@ -3,6 +3,8 @@
 //#include "r_timer_api.h"
 #define DEBUGGER 1
 #define DEBUG 0
+#define PRIMARY_IP IP_ADDRESS(192,168,10,181)
+#define PRIMARY_PORT 5000
 #define IPADDSTRING "192.168.10.182"
 #define NXD_MQTT_MAX_MESSAGE_LENGTH 50
 #define UDPMSGLENGTH 10
@@ -211,6 +213,7 @@ struct machineGlobals
     int relay2;
     int relay3;
 
+    ULONG ethIP;
     char UDPBuffer[UDPMSGLENGTH];
     char UDPTxBuff[UDPMSGLENGTH];
     char UDPRXReady;

@@ -173,7 +173,7 @@ SCI9: SDA
 SCI9: TXD_MOSI
 SDHI0: DAT5
 SPI1: MOSI"
-"P204","52","CTSU0_TS00","Cap_Touch_Sensing_Unit_TS00","Low","","Peripheral mode","CMOS","None","AGT1: AGTIO
+"P204","52","","","","","Disabled","","","AGT1: AGTIO
 BUS0: A18
 CAC0: CACREF
 CTSU0: TS00
@@ -186,7 +186,7 @@ SDHI0: DAT4
 SPI1: RSPCK
 SSI1: SSISCK
 USBFS0: OVRCURB"
-"P205","51","CTSU0_TSCAP","Cap_Touch_Sensing_Unit_TSCAP","Low","None","Peripheral mode","CMOS","None","AGT1: AGTO
+"P205","51","","","","","Disabled","","","AGT1: AGTO
 BUS0: A16
 CGC0: CLKOUT
 CTSU0: TSCAP
@@ -202,7 +202,7 @@ SDHI0: DAT3
 SPI1: SSL0
 SSI1: SSIWS
 USBFS0: OVRCURA"
-"P206","50","CTSU0_TS01","Cap_Touch_Sensing_Unit_TS01","Low","None","Peripheral mode","CMOS","None","BUS0: WAIT
+"P206","50","","","","","Disabled","","","BUS0: WAIT
 CTSU0: TS01
 ETHERC0: LINKSTA
 IIC1: SDA
@@ -214,7 +214,7 @@ SDHI0: DAT2
 SPI1: SSL1
 SSI1: SSIDATA
 USBFS0: VBUSEN"
-"P207","49","CTSU0_TS02","Cap_Touch_Sensing_Unit_TS02","Low","","Peripheral mode","CMOS","None","BUS0: A17
+"P207","49","","","","","Disabled","","","BUS0: A17
 CTSU0: TS02
 SPI1: SSL2"
 "P212","24","CGC0_EXTAL","","","None","Peripheral mode","CMOS","None","AGT1: AGTEE
@@ -338,7 +338,7 @@ RTC0: RTCOUT
 SCI4: CTS_RTS_SS
 SPI1: SSL3
 USBFS0: VBUS"
-"P408","43","CTSU0_TS04","Cap_Touch_Sensing_Unit_TS04","Low","None","Peripheral mode","CMOS","None","CTSU0: TS04
+"P408","43","","","","","Disabled","","","CTSU0: TS04
 ETHERC0: CRS_DV
 GPT10: GTIOCB
 IRQ0: IRQ07
@@ -347,7 +347,7 @@ SCI3: RXD_MISO
 SCI3: SCL
 USBFS0: ID
 USBHS0: ID"
-"P409","42","CTSU0_TS05","Cap_Touch_Sensing_Unit_TS05","Low","None","Peripheral mode","CMOS","None","CTSU0: TS05
+"P409","42","GPIO","","Low","None","Output mode (Initial Low)","CMOS","None","CTSU0: TS05
 ETHERC0: RX_ER
 GPT10: GTIOCA
 IRQ0: IRQ06
@@ -356,7 +356,7 @@ SCI3: SDA
 SCI3: TXD_MOSI
 USBFS0: EXICEN
 USBHS0: EXICEN"
-"P410","41","SCI0_RXD_MISO","SCI0_RXD0_SCL0_MISO0","Medium","None","Peripheral mode","CMOS","None","AGT1: AGTOB
+"P410","41","GPIO","","Low","None","Output mode (Initial Low)","CMOS","None","AGT1: AGTOB
 CTSU0: TS06
 ETHERC0: RXD1
 GPT9: GTIOCB
@@ -367,7 +367,7 @@ SCI0: SCL
 SCI3: SCK
 SDHI0: DAT1
 SPI0: MISO"
-"P411","40","SCI0_TXD_MOSI","SCI0_TXD0_SDA0_MOSI0","Medium","None","Peripheral mode","CMOS","None","AGT1: AGTOA
+"P411","40","GPIO","","Low","None","Output mode (Initial Low)","CMOS","None","AGT1: AGTOA
 CTSU0: TS07
 ETHERC0: RXD0
 GPT9: GTIOCA
@@ -378,23 +378,23 @@ SCI0: TXD_MOSI
 SCI3: CTS_RTS_SS
 SDHI0: DAT0
 SPI0: MOSI"
-"P412","39","SCI0_SCK","SCI0_SCK0","High","","Peripheral mode","CMOS","None","CTSU0: TS08
+"P412","39","GPIO","","Low","","Output mode (Initial Low)","CMOS","None","CTSU0: TS08
 ETHERC0: REF50CK
 OPS0: GTOULO
 SCI0: SCK
 SDHI0: CMD
 SPI0: RSPCK"
-"P413","38","GPIO","GPIO15","Medium","","Output mode (Initial Low)","CMOS","None","CTSU0: TS09
+"P413","38","GPIO","GPIO15","Low","","Output mode (Initial Low)","CMOS","None","CTSU0: TS09
 ETHERC0: TXD0
 OPS0: GTOUUP
 SCI0: CTS_RTS_SS
 SDHI0: CLK
 SPI0: SSL0"
-"P414","37","CTSU0_TS10","Cap_Touch_Sensing_Unit_TS10","Low","","Peripheral mode","CMOS","None","CTSU0: TS10
+"P414","37","GPIO","","Low","","Output mode (Initial Low)","CMOS","None","CTSU0: TS10
 ETHERC0: TXD1
 SDHI0: WP
 SPI0: SSL1"
-"P415","36","CTSU0_TS11","Cap_Touch_Sensing_Unit_TS11","Low","","Peripheral mode","CMOS","None","CTSU0: TS11
+"P415","36","GPIO","","Low","","Output mode (Initial Low)","CMOS","None","CTSU0: TS11
 ETHERC0: TXD_EN
 SPI0: SSL2"
 "P500","140","QSPI0_QSPCLK","Quad_SPI_QSPCLK","High","","Peripheral mode","CMOS","None","ADC0: AN16
@@ -545,9 +545,9 @@ GLCDC0: LCD_DATA14"
 "PA08","107","GLCDC0_LCD_DATA09","GLCD_Controller__Pin_Option_B_LCD_DATA09_B","Medium","","Peripheral mode","CMOS","None","GLCDC0: LCD_DATA09"
 "PA09","108","GLCDC0_LCD_DATA08","GLCD_Controller__Pin_Option_B_LCD_DATA08_B","Medium","","Peripheral mode","CMOS","None","GLCDC0: LCD_DATA08"
 "PA10","109","GLCDC0_LCD_DATA07","GLCD_Controller__Pin_Option_B_LCD_DATA07_B","Medium","","Peripheral mode","CMOS","None","GLCDC0: LCD_DATA07"
-"PB00","16","USBHS0_VBUSEN","USB_High_Speed_USBHS_VBUSEN","Low","","Peripheral mode","CMOS","None","SCI3: SCK
+"PB00","16","GPIO","","Low","","Output mode (Initial Low)","CMOS","None","SCI3: SCK
 USBHS0: VBUSEN"
-"PB01","17","USBHS0_VBUS","USB_High_Speed_USBHS_VBUS","Low","","Peripheral mode","CMOS","None","SCI3: CTS_RTS_SS
+"PB01","17","","","","","Disabled","","","SCI3: CTS_RTS_SS
 USBHS0: VBUS"
 "PVSSUSBHS","29","USBHS0_PVSSUSBHS","","","","","","",""
 "RES","67","","","","","","","",""

@@ -26,7 +26,7 @@ void CallistoMain_entry(void)
 
     while (1)
     {
-        if (DEBUGGER)
+        if (DEBUG)
         {
             printf ("\nWaiting...");
         }

@@ -95,6 +95,7 @@ void initGlobalsBlock()
 
     machineGlobalsBlock->idlePin = IOPORT_PORT_06_PIN_00;
 
+    machineGlobalsBlock->ethIP = 0;
     machineGlobalsBlock->UDPRXReady = 0;
     memset (machineGlobalsBlock->UDPBuffer, 0, 15);
 

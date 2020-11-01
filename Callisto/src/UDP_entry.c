@@ -12,6 +12,8 @@ void UDP_entry(void)
 {
     UINT status;
     ULONG link_status;
+    ULONG currentIP;
+    ULONG currentMask;
     /* Create all sockets and bind them to their respective ports */
     /* Wait for the IP stack and network hardware
      * to get initialized.
@@ -20,6 +22,7 @@ void UDP_entry(void)
     tx_thread_sleep (50);
     while (machineGlobalsBlock->globalsInit != 1)
         tx_thread_sleep (1);
+
     status = nx_ip_status_check (&g_ip0, NX_IP_INITIALIZE_DONE, &link_status, NX_WAIT_FOREVER);
     /* Check for error.  */
     if (NX_SUCCESS != status)
@@ -33,7 +36,7 @@ void UDP_entry(void)
             printf ("\nLink enabled.");
     }
 
-    if (DEBUG)
+    if (DEBUGGER)
     {
         printf ("\nIP initialization complete. IP:%s", IPADDSTRING);
     }
@@ -42,7 +45,7 @@ void UDP_entry(void)
     //                                  512);
     status = nx_udp_socket_create(&g_ip0, &machineGlobalsBlock->g_udp_sck, "UDP Socket", NX_IP_NORMAL, NX_DONT_FRAGMENT,
                                   NX_IP_TIME_TO_LIVE, 512);
-    if (DEBUG)
+    if (DEBUGGER)
     {
         if (NX_SUCCESS != status)
         {
@@ -56,7 +59,7 @@ void UDP_entry(void)
 
     status = nx_udp_socket_bind (&machineGlobalsBlock->g_udp_sck, APP_UDP_PORT_BASE, NX_NO_WAIT);
 
-    if (DEBUG)
+    if (DEBUGGER)
     {
 
         if (NX_SUCCESS != status)
@@ -70,7 +73,7 @@ void UDP_entry(void)
     }
 
     status = nx_udp_socket_receive_notify (&machineGlobalsBlock->g_udp_sck, g_udp_sck_receive_cb);
-    if (DEBUG)
+    if (DEBUGGER)
     {
         if (NX_SUCCESS != status)
         {
@@ -83,7 +86,49 @@ void UDP_entry(void)
         }
     }
 
-    if (DEBUG)
+    if (DEBUGGER)
+        printf ("\nGetting next available IP.");
+
+    tx_thread_sleep (rand () % 500);
+
+//    while (1)
+//    {
+//
+//        machineGlobalsBlock->UDPTxBuff[0] = 'b';
+//        machineGlobalsBlock->UDPTxBuff[1] = 'b';
+//
+//        UDPSend ();
+//
+//        tx_thread_sleep (1000);
+//    }
+
+    while (machineGlobalsBlock->ethIP == 0)
+    {
+        printf ("\nGetting new IP...");
+        machineGlobalsBlock->UDPTxBuff[0] = 'a';
+        machineGlobalsBlock->UDPTxBuff[1] = 'a';
+
+        UDPSend ();
+
+        tx_thread_sleep (2000);
+    }
+
+    status = nx_ip_address_get (&g_ip0, &currentIP, &currentMask);
+    status = nx_ip_address_set (&g_ip0, machineGlobalsBlock->ethIP, currentMask);
+
+    if (DEBUGGER)
+    {
+        if (status == NX_SUCCESS)
+        {
+            printf ("\nNew IP set:%lu", machineGlobalsBlock->ethIP);
+        }
+        else
+        {
+            printf ("\nFailed to set new IP.");
+        }
+    }
+
+    if (DEBUGGER)
     {
         printf ("\nUDP initialization complete.");
     }
@@ -98,7 +143,7 @@ void UDP_entry(void)
         //        }
         /* Reception is handled from UDP callbacks dispatched from
          * IP instance thread */
-        tx_thread_sleep (50);
+        tx_thread_sleep (500);
 //        tx_thread_suspend (tx_thread_identify ());
 
     }
@@ -148,6 +193,7 @@ void processUDP(char *UDPRx)
     double data;
     int dataInt;
     ioport_level_t level;
+    ULONG newIP;
     switch (UDPRx[0])
     {
         case '0':
@@ -312,6 +358,18 @@ void processUDP(char *UDPRx)
                 break;
             }
             UDPSend ();
+        break;
+        case 'a':
+            ///Receive new IP assignment
+            switch (UDPRx[1])
+            {
+                case 'a':
+                    memcpy (&newIP, (UDPRx + 2), 8);
+                    machineGlobalsBlock->ethIP = newIP;
+                break;
+                default:
+                break;
+            }
         break;
         case 'c':
             ///Calibrate axis.
@@ -709,49 +767,56 @@ static void g_udp_sck_receive_cb(NX_UDP_SOCKET *p_sck)
     NX_PACKET *p_packet = NULL;
     ULONG *length;
     char buff[UDPMSGLENGTH];
+    ULONG srcIP;
+    UINT srcPort;
+
     /* Receive data here */
     status = nx_udp_socket_receive (p_sck, &p_packet, NX_NO_WAIT);
     if (status == NX_SUCCESS)
     {
         memcpy (buff, p_packet->nx_packet_prepend_ptr, UDPMSGLENGTH);
 
-        status = nx_udp_socket_send(&machineGlobalsBlock->g_udp_sck, p_packet, IP_ADDRESS(192,168,10,181), 5000);
-        if (status != NX_SUCCESS)
+        if (NULL != buff[0])
         {
-            status = nx_packet_release(p_packet);
-            if (DEBUGGER)
-                printf ("\nEcho Fail.");
-        }
-        if (DEBUG)
-        {
-            if (NX_SUCCESS == status)
+
+            //        nx_udp_source_extract (p_packet, &srcIP, &srcPort);
+
+            ///Don't send an echo for IP packets. Primary does not have event flag for it.
+            if (buff[0] != 'a' && buff[1] != 'a')
             {
-                printf ("\nEcho send success.");
+                status = nx_udp_socket_send(&machineGlobalsBlock->g_udp_sck, p_packet, PRIMARY_IP, PRIMARY_PORT);
+
+                if (status != NX_SUCCESS)
+                {
+                    status = nx_packet_release(p_packet);
+                    if (DEBUG)
+                        printf ("\nEcho Fail.");
+                }
+                if (DEBUG)
+                {
+                    if (NX_SUCCESS == status)
+                    {
+                        printf ("\nEcho send success.");
+                    }
+                    else
+                    {
+                        printf ("\nEcho send fail.");
+                    }
+                }
             }
-            else
+
+            if (DEBUG)
             {
-                printf ("\nEcho send fail.");
+                printf ("\nReceived:%s", buff);
             }
+            processUDP (buff);
         }
 
     }
     else
     {
-        if (DEBUGGER)
-            printf ("\nReceive Fail.");
-    }
-
-    if (NULL != buff[0])
-    {
-//        ULONG ip;
-//        UINT client_port;
-//        nx_udp_source_extract (p_packet, &ip, &client_port);
-
         if (DEBUG)
-        {
-            printf ("\nReceived:%s", buff);
-        }
-        processUDP (buff);
+            printf ("\nReceive Fail.");
     }
 
 }
