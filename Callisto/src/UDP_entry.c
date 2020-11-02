@@ -143,7 +143,11 @@ void UDP_entry(void)
         //        }
         /* Reception is handled from UDP callbacks dispatched from
          * IP instance thread */
-        tx_thread_sleep (500);
+        if(machineGlobalsBlock->reportIP == 1){
+            reportIP();
+            machineGlobalsBlock->reportIP = 0;
+        }
+        tx_thread_sleep (100);
 //        tx_thread_suspend (tx_thread_identify ());
 
     }
@@ -162,7 +166,7 @@ void UDPSend()
     {
         printf ("\nSending:%s...", machineGlobalsBlock->UDPTxBuff);
     }
-    status = nx_udp_socket_send(&machineGlobalsBlock->g_udp_sck, my_packet, IP_ADDRESS(192,168,10,181), 5000);
+    status = nx_udp_socket_send(&machineGlobalsBlock->g_udp_sck, my_packet, PRIMARY_IP, PRIMARY_PORT);
     if (status != NX_SUCCESS)
     {
         nx_packet_release(my_packet);

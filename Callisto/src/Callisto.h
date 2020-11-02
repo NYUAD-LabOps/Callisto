@@ -214,6 +214,7 @@ struct machineGlobals
     int relay3;
 
     ULONG ethIP;
+    char reportIP;
     char UDPBuffer[UDPMSGLENGTH];
     char UDPTxBuff[UDPMSGLENGTH];
     char UDPRXReady;
@@ -265,3 +266,4 @@ double percentError(double target, double source);
 void processUDP(char *UDPRx);
 void toolHandler(struct toolBlock *toolBlock);
 void initToolBlocks();
+void reportIP();

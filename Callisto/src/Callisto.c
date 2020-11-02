@@ -31,7 +31,7 @@ void initMotors()
 
 void initTools()
 {
-    toolInitA();
+    toolInitA ();
 }
 
 ///Motor Block initialization process.
@@ -96,6 +96,7 @@ void initGlobalsBlock()
     machineGlobalsBlock->idlePin = IOPORT_PORT_06_PIN_00;
 
     machineGlobalsBlock->ethIP = 0;
+    machineGlobalsBlock->reportIP = 0;
     machineGlobalsBlock->UDPRXReady = 0;
     memset (machineGlobalsBlock->UDPBuffer, 0, 15);
 
@@ -192,4 +193,12 @@ void checkSetMotorDir(struct motorController *motorBlock, double fwd)
             motorBlock->targetDir = IOPORT_LEVEL_HIGH;
         }
     }
+}
+
+void reportIP()
+{
+    machineGlobalsBlock->UDPTxBuff[0] = 'a';
+    machineGlobalsBlock->UDPTxBuff[1] = 'b';
+
+    UDPSend ();
 }

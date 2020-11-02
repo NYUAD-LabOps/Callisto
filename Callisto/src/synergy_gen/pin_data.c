@@ -106,11 +106,11 @@ const ioport_pin_cfg_t g_bsp_pin_cfg_data[] = {
 	},
 	{
 		.pin = IOPORT_PORT_02_PIN_02,
-		.pin_cfg = (IOPORT_CFG_DRIVE_HIGH | IOPORT_CFG_PERIPHERAL_PIN | IOPORT_PERIPHERAL_SCI0_2_4_6_8),
+		.pin_cfg = (IOPORT_CFG_IRQ_ENABLE | IOPORT_CFG_PORT_DIRECTION_INPUT),
 	},
 	{
 		.pin = IOPORT_PORT_02_PIN_03,
-		.pin_cfg = (IOPORT_CFG_PORT_DIRECTION_INPUT),
+		.pin_cfg = (IOPORT_CFG_IRQ_ENABLE | IOPORT_CFG_PORT_DIRECTION_INPUT),
 	},
 	{
 		.pin = IOPORT_PORT_02_PIN_12,
@@ -123,14 +123,6 @@ const ioport_pin_cfg_t g_bsp_pin_cfg_data[] = {
 	{
 		.pin = IOPORT_PORT_03_PIN_00,
 		.pin_cfg = (IOPORT_CFG_PERIPHERAL_PIN | IOPORT_PERIPHERAL_DEBUG),
-	},
-	{
-		.pin = IOPORT_PORT_03_PIN_01,
-		.pin_cfg = (IOPORT_CFG_DRIVE_MID | IOPORT_CFG_PERIPHERAL_PIN | IOPORT_PERIPHERAL_SCI0_2_4_6_8),
-	},
-	{
-		.pin = IOPORT_PORT_03_PIN_02,
-		.pin_cfg = (IOPORT_CFG_DRIVE_MID | IOPORT_CFG_PERIPHERAL_PIN | IOPORT_PERIPHERAL_SCI0_2_4_6_8),
 	},
 	{
 		.pin = IOPORT_PORT_03_PIN_03,
@@ -189,12 +181,8 @@ const ioport_pin_cfg_t g_bsp_pin_cfg_data[] = {
 		.pin_cfg = (IOPORT_CFG_IRQ_ENABLE | IOPORT_CFG_PORT_DIRECTION_INPUT),
 	},
 	{
-		.pin = IOPORT_PORT_04_PIN_01,
-		.pin_cfg = (IOPORT_CFG_PERIPHERAL_PIN | IOPORT_PERIPHERAL_CAN),
-	},
-	{
 		.pin = IOPORT_PORT_04_PIN_02,
-		.pin_cfg = (IOPORT_CFG_PERIPHERAL_PIN | IOPORT_PERIPHERAL_CAN),
+		.pin_cfg = (IOPORT_CFG_IRQ_ENABLE | IOPORT_CFG_PORT_DIRECTION_INPUT),
 	},
 	{
 		.pin = IOPORT_PORT_04_PIN_03,
@@ -215,6 +203,10 @@ const ioport_pin_cfg_t g_bsp_pin_cfg_data[] = {
 	{
 		.pin = IOPORT_PORT_04_PIN_07,
 		.pin_cfg = (IOPORT_CFG_PERIPHERAL_PIN | IOPORT_PERIPHERAL_USB_FS),
+	},
+	{
+		.pin = IOPORT_PORT_04_PIN_08,
+		.pin_cfg = (IOPORT_CFG_IRQ_ENABLE | IOPORT_CFG_PORT_DIRECTION_INPUT),
 	},
 	{
 		.pin = IOPORT_PORT_04_PIN_09,
