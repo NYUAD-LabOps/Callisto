@@ -36,7 +36,7 @@ void CallistoMain_entry(void)
 
 void ext_irqX_callback(external_irq_callback_args_t *p_args)
 {
-    limitHit (motorBlockX);
+//    limitHit (motorBlockX);
     machineGlobalsBlock->reportIP = 1;
 }
 

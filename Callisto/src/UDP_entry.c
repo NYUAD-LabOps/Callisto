@@ -143,8 +143,9 @@ void UDP_entry(void)
         //        }
         /* Reception is handled from UDP callbacks dispatched from
          * IP instance thread */
-        if(machineGlobalsBlock->reportIP == 1){
-            reportIP();
+        if (machineGlobalsBlock->reportIP == 1)
+        {
+            reportIP ();
             machineGlobalsBlock->reportIP = 0;
         }
         tx_thread_sleep (100);
@@ -159,7 +160,11 @@ void UDPSend()
     UINT status;
     ioport_level_t level;
     NX_PACKET *my_packet;
-    status = nx_packet_allocate (&g_packet_pool0, &my_packet, NX_UDP_PACKET, NX_WAIT_FOREVER);
+    status = nx_packet_allocate (&g_packet_pool0, &my_packet, NX_UDP_PACKET, 500);
+    if (status != NX_SUCCESS)
+    {
+        printf ("\nAllocate Fail.");
+    }
     nx_packet_data_append (my_packet, &machineGlobalsBlock->UDPTxBuff, UDPMSGLENGTH, &g_packet_pool0,
     NX_WAIT_FOREVER);
     if (DEBUG)
@@ -167,9 +172,21 @@ void UDPSend()
         printf ("\nSending:%s...", machineGlobalsBlock->UDPTxBuff);
     }
     status = nx_udp_socket_send(&machineGlobalsBlock->g_udp_sck, my_packet, PRIMARY_IP, PRIMARY_PORT);
+    if (NX_SUCCESS == status)
+    {
+        printf ("\nSend success.");
+    }
     if (status != NX_SUCCESS)
     {
-        nx_packet_release(my_packet);
+        status = nx_packet_release(my_packet);
+        if (status != NX_SUCCESS)
+        {
+            printf ("\nRelease Fail b.");
+        }
+    }
+    else
+    {
+
     }
     if (DEBUG)
     {
@@ -792,9 +809,13 @@ static void g_udp_sck_receive_cb(NX_UDP_SOCKET *p_sck)
 
                 if (status != NX_SUCCESS)
                 {
-                    status = nx_packet_release(p_packet);
+
                     if (DEBUG)
                         printf ("\nEcho Fail.");
+                }
+                else
+                {
+
                 }
                 if (DEBUG)
                 {
@@ -815,7 +836,7 @@ static void g_udp_sck_receive_cb(NX_UDP_SOCKET *p_sck)
             }
             processUDP (buff);
         }
-
+        status = nx_packet_release(p_packet);
     }
     else
     {
