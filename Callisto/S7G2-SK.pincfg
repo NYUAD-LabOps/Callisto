@@ -509,15 +509,15 @@
   <v1:configSetting configurationId="p410.gpio_mode" altId="p410.gpio_mode.gpio_mode_out.low"/>
   <v1:configSetting configurationId="p010.gpio_mode" altId="p010.gpio_mode.gpio_mode_in"/>
   <v1:configSetting configurationId="p005.gpio_irq" altId="p005.gpio_irq.gpio_irq_enabled"/>
-  <v1:configSetting configurationId="p410" altId="p410.output.low"></v1:configSetting>
+  <v1:configSetting configurationId="p410" altId="p410.output.low"/>
   <v1:configSetting configurationId="adc0.mode" altId="adc0.mode.custom"/>
   <v1:configSetting configurationId="p905.gpio_mode" altId="p905.gpio_mode.gpio_mode_peripheral"/>
-  <v1:configSetting configurationId="p414" altId="p414.output.low"></v1:configSetting>
+  <v1:configSetting configurationId="p414" altId="p414.output.low"/>
   <v1:configSetting configurationId="p413" altId="p413.output.low"/>
   <v1:configSetting configurationId="p314.gpio_drivecapacity" altId="p314.gpio_speed.gpio_speed_medium"/>
-  <v1:configSetting configurationId="p412" altId="p412.output.low"></v1:configSetting>
-  <v1:configSetting configurationId="p411" altId="p411.output.low"></v1:configSetting>
-  <v1:configSetting configurationId="p415" altId="p415.output.low"></v1:configSetting>
+  <v1:configSetting configurationId="p412" altId="p412.output.low"/>
+  <v1:configSetting configurationId="p411" altId="p411.output.low"/>
+  <v1:configSetting configurationId="p415" altId="p415.output.low"/>
   <v1:configSetting configurationId="p503.gpio_drivecapacity" altId="p503.gpio_speed.gpio_speed_high"/>
   <v1:configSetting configurationId="p305.gpio_mode" altId="p305.gpio_mode.gpio_mode_peripheral"/>
   <v1:configSetting configurationId="p105.gpio_mode" altId="p105.gpio_mode.gpio_mode_peripheral"/>
@@ -590,7 +590,7 @@
   <v1:configSetting configurationId="p309" altId="p309.output.low"/>
   <v1:configSetting configurationId="p905.gpio_drivecapacity" altId="p905.gpio_speed.gpio_speed_medium"/>
   <v1:configSetting configurationId="qspi0.mode" altId="qspi0.mode.custom.a"/>
-  <v1:configSetting configurationId="pb00" altId="pb00.output.low"></v1:configSetting>
+  <v1:configSetting configurationId="pb00" altId="pb00.output.low"/>
   <v1:configSetting configurationId="p700.gpio_drivecapacity" altId="p700.gpio_speed.gpio_speed_high"/>
   <v1:configSetting configurationId="p706.gpio_drivecapacity" altId="p706.gpio_speed.gpio_speed_medium"/>
   <v1:configSetting configurationId="p113.gpio_drivecapacity" altId="p113.gpio_speed.gpio_speed_medium"/>

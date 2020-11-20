@@ -36,8 +36,8 @@ void CallistoMain_entry(void)
 
 void ext_irqX_callback(external_irq_callback_args_t *p_args)
 {
-//    limitHit (motorBlockX);
-    machineGlobalsBlock->reportIP = 1;
+    limitHit (motorBlockX);
+
 }
 
 void ext_irqY_callback(external_irq_callback_args_t *p_args)
@@ -46,7 +46,7 @@ void ext_irqY_callback(external_irq_callback_args_t *p_args)
 }
 void ext_irqZ_callback(external_irq_callback_args_t *p_args)
 {
-    limitHit (motorBlockZ);
+    machineGlobalsBlock->reportIP = 1;
 }
 
 void gpt_4_callback(timer_callback_args_t *p_args)
