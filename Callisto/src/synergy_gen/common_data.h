@@ -20,8 +20,8 @@
 extern "C"
 {
 #endif
-#ifndef NULL
-void NULL(nx_mac_address_t *p_mac_config);
+#ifndef setMacAddress
+void setMacAddress(nx_mac_address_t *p_mac_config);
 #endif
 #ifndef NULL
 void NULL(NX_PACKET *packet_ptr, USHORT packet_type);

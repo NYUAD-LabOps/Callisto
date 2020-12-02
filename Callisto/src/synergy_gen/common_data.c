@@ -14,7 +14,7 @@
 #endif
 NX_REC nx_record1;
 static NX_CALLBACK_REC g_sf_el_nx_callbacks =
-{ .nx_ether_unknown_packet_receive_callback = NULL, .nx_ether_mac_address_change_callback = NULL, };
+{ .nx_ether_unknown_packet_receive_callback = NULL, .nx_ether_mac_address_change_callback = setMacAddress, };
 static sf_el_nx_cfg_t sf_el_nx1_cfg =
 { .channel = 1, .nx_mac_address =
 { .nx_mac_address_h = SF_EL_NX_CFG_ENET1_MAC_H, .nx_mac_address_l = SF_EL_NX_CFG_ENET1_MAC_L },

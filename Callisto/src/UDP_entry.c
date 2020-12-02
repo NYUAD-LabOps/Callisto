@@ -116,11 +116,37 @@ void UDP_entry(void)
     status = nx_ip_address_get (&g_ip0, &currentIP, &currentMask);
     status = nx_ip_address_set (&g_ip0, machineGlobalsBlock->ethIP, currentMask);
 
+    ULONG physMSW, physLSW;
+
+    status = nx_ip_interface_physical_address_get (&g_ip0, 0, &physMSW, &physLSW);
+    if (status == NX_SUCCESS)
+    {
+        printf ("\nPhysical address:%lu %lu", physMSW, physLSW);
+    }
+    else
+    {
+        printf ("\nPhysical address set fail.");
+    }
+//    physMSW += (rand () % 500);
+//    physLSW += (rand () % 500);
+    status = nx_ip_interface_physical_address_set (&g_ip0, 0, physMSW, physLSW, NX_TRUE);
+    if (status == NX_SUCCESS)
+    {
+        printf ("\nPhysical address:%lu %lu", physMSW, physLSW);
+    }
+    else
+    {
+        printf ("\nPhysical address set fail.");
+    }
+    tx_thread_sleep (250);
+    status = nx_ip_interface_physical_address_get (&g_ip0, 0, &physMSW, &physLSW);
+
     if (DEBUGGER)
     {
         if (status == NX_SUCCESS)
         {
             printf ("\nNew IP set:%lu", machineGlobalsBlock->ethIP);
+            printf ("\nPhysical address:%lu %lu", physMSW, physLSW);
         }
         else
         {
@@ -172,10 +198,10 @@ void UDPSend()
         printf ("\nSending:%s...", machineGlobalsBlock->UDPTxBuff);
     }
     status = nx_udp_socket_send(&machineGlobalsBlock->g_udp_sck, my_packet, PRIMARY_IP, PRIMARY_PORT);
-    if (NX_SUCCESS == status)
-    {
-        printf ("\nSend success.");
-    }
+//    if (NX_SUCCESS == status)
+//    {
+//        printf ("\nSend success.");
+//    }
     if (status != NX_SUCCESS)
     {
         status = nx_packet_release(my_packet);
@@ -700,7 +726,8 @@ void processUDP(char *UDPRx)
         break;
         case 't':
             ///Master will request slave status.
-
+            machineGlobalsBlock->UDPTxBuff[0] = 't';
+            machineGlobalsBlock->UDPTxBuff[1] = 'x';
             if (motorBlockX->homing == 1 || motorBlockY->homing == 1 || motorBlockZ->homing == 1)
             {
                 machineGlobalsBlock->UDPTxBuff[2] = '1';
@@ -797,43 +824,45 @@ static void g_udp_sck_receive_cb(NX_UDP_SOCKET *p_sck)
     {
         memcpy (buff, p_packet->nx_packet_prepend_ptr, UDPMSGLENGTH);
 
-        if (NULL != buff[0])
+        //        nx_udp_source_extract (p_packet, &srcIP, &srcPort);
+
+        ///Don't send an echo for IP packets. Primary does not have event flag for it.
+        if (buff[0] != 'a' && buff[1] != 'a')
         {
+            p_packet->nx_packet_prepend_ptr[0] = 'A';
+            p_packet->nx_packet_prepend_ptr[1] = 'C';
+            p_packet->nx_packet_prepend_ptr[2] = 'K';
 
-            //        nx_udp_source_extract (p_packet, &srcIP, &srcPort);
+            status = nx_udp_socket_send(&machineGlobalsBlock->g_udp_sck, p_packet, PRIMARY_IP, PRIMARY_PORT);
 
-            ///Don't send an echo for IP packets. Primary does not have event flag for it.
-            if (buff[0] != 'a' && buff[1] != 'a')
+            if (status != NX_SUCCESS)
             {
-                status = nx_udp_socket_send(&machineGlobalsBlock->g_udp_sck, p_packet, PRIMARY_IP, PRIMARY_PORT);
+                if (DEBUG)
+                    printf ("\nEcho Fail.");
+            }
+            else
+            {
 
-                if (status != NX_SUCCESS)
+            }
+            if (DEBUG)
+            {
+                if (NX_SUCCESS == status)
                 {
-
-                    if (DEBUG)
-                        printf ("\nEcho Fail.");
+                    printf ("\nEcho send success.");
                 }
                 else
                 {
-
-                }
-                if (DEBUG)
-                {
-                    if (NX_SUCCESS == status)
-                    {
-                        printf ("\nEcho send success.");
-                    }
-                    else
-                    {
-                        printf ("\nEcho send fail.");
-                    }
+                    printf ("\nEcho send fail.");
                 }
             }
+        }
 
-            if (DEBUG)
-            {
-                printf ("\nReceived:%s", buff);
-            }
+        if (DEBUG)
+        {
+            printf ("\nReceived:%s", buff);
+        }
+        if (NULL != buff[0])
+        {
             processUDP (buff);
         }
         status = nx_packet_release(p_packet);
@@ -843,5 +872,27 @@ static void g_udp_sck_receive_cb(NX_UDP_SOCKET *p_sck)
         if (DEBUG)
             printf ("\nReceive Fail.");
     }
+
+}
+
+void setMacAddress (nx_mac_address_t*_pMacAddress)
+
+{
+
+    //  REA's Vendor MAC range: 00:30:55:xx:xx:xx
+
+    fmi_unique_id_t id;
+
+    g_fmi.p_api->uniqueIdGet(&id);
+
+    ULONG lowerHalfMac=((0x55000000)|(id.unique_id[0]&(0x00FFFFFF)));
+
+
+
+    _pMacAddress->nx_mac_address_h=0x0030;
+
+    _pMacAddress->nx_mac_address_l=lowerHalfMac;
+
+
 
 }

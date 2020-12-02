@@ -651,7 +651,7 @@ Synergy Configuration
       Instance "g_sf_el_nx NetX Port ETHER on sf_el_nx"
         Name: g_sf_el_nx
         Channel: 1
-        MAC address change callback: NULL
+        MAC address change callback: setMacAddress
         Unknown packet receive Callback: NULL
         
   Thread "ToolA"

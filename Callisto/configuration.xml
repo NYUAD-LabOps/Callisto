@@ -297,7 +297,7 @@
     <module id="module.framework.sf_el_nx.1902786023">
       <property id="module.framework.sf_el_nx.name" value="g_sf_el_nx"/>
       <property id="module.framework.sf_el_nx.channel" value="1"/>
-      <property id="module.framework.sf_el_nx.mac_update_callback" value="NULL"/>
+      <property id="module.framework.sf_el_nx.mac_update_callback" value="setMacAddress"/>
       <property id="module.framework.sf_el_nx.receive_callback" value="NULL"/>
     </module>
     <module id="module.driver.adc_on_adc.1062978584">
