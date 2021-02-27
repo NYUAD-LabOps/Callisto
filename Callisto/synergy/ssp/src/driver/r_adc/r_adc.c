@@ -1704,6 +1704,16 @@ static ssp_err_t r_adc_open_sub(adc_instance_ctrl_t * const p_ctrl,
     /** Save calibration register availability status to control block */
     p_ctrl->adc_calib_available = adc_bsp_feature.calibration_reg_available;
 
+    /** Set ADC internal reference voltage before calibration to avoid wrong calibrated reference value. */
+    if (1U == adc_bsp_feature.reference_voltage)
+    {
+        HW_ADC_VREFAMPCNT_Set(p_ctrl->p_reg, p_ctrl->voltage_ref);
+        R_BSP_SoftwareDelay(150U, BSP_DELAY_UNITS_MICROSECONDS);
+        HW_ADC_OVERCURRENT_Set(p_ctrl->p_reg, p_ctrl->over_current);
+        HW_ADC_VREFAMPCNT_Set_Enabled(p_ctrl->p_reg, p_ctrl->voltage_ref);
+        R_BSP_SoftwareDelay(1500U, BSP_DELAY_UNITS_MICROSECONDS);
+    }
+
     if (true == (bool)(p_ctrl->adc_calib_available))
     {
         /**If the user has chosen to not skip calibration, perform calibration */
@@ -1745,14 +1755,7 @@ static ssp_err_t r_adc_open_sub(adc_instance_ctrl_t * const p_ctrl,
         }
 
     }
-    if (1U == adc_bsp_feature.reference_voltage)
-    {
-        HW_ADC_VREFAMPCNT_Set(p_ctrl->p_reg, p_ctrl->voltage_ref);
-        R_BSP_SoftwareDelay(150U, BSP_DELAY_UNITS_MICROSECONDS);
-        HW_ADC_OVERCURRENT_Set(p_ctrl->p_reg, p_ctrl->over_current);
-        HW_ADC_VREFAMPCNT_Set_Enabled(p_ctrl->p_reg, p_ctrl->voltage_ref);
-        R_BSP_SoftwareDelay(1500U, BSP_DELAY_UNITS_MICROSECONDS);
-    }
+
     return err;
 }
 

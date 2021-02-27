@@ -87,96 +87,13 @@ void UDP_entry(void)
     }
 
     if (DEBUGGER)
-        printf ("\nGetting next available IP.");
-
-    tx_thread_sleep (rand () % 500);
-
-//    while (1)
-//    {
-//
-//        machineGlobalsBlock->UDPTxBuff[0] = 'b';
-//        machineGlobalsBlock->UDPTxBuff[1] = 'b';
-//
-//        UDPSend ();
-//
-//        tx_thread_sleep (1000);
-//    }
-
-    while (machineGlobalsBlock->ethIP == 0)
-    {
-        printf ("\nGetting new IP...");
-        machineGlobalsBlock->UDPTxBuff[0] = 'a';
-        machineGlobalsBlock->UDPTxBuff[1] = 'a';
-
-        UDPSend ();
-
-        tx_thread_sleep (2000);
-    }
-
-    status = nx_ip_address_get (&g_ip0, &currentIP, &currentMask);
-    status = nx_ip_address_set (&g_ip0, machineGlobalsBlock->ethIP, currentMask);
-
-    ULONG physMSW, physLSW;
-
-    status = nx_ip_interface_physical_address_get (&g_ip0, 0, &physMSW, &physLSW);
-    if (status == NX_SUCCESS)
-    {
-        printf ("\nPhysical address:%lu %lu", physMSW, physLSW);
-    }
-    else
-    {
-        printf ("\nPhysical address set fail.");
-    }
-//    physMSW += (rand () % 500);
-//    physLSW += (rand () % 500);
-    status = nx_ip_interface_physical_address_set (&g_ip0, 0, physMSW, physLSW, NX_TRUE);
-    if (status == NX_SUCCESS)
-    {
-        printf ("\nPhysical address:%lu %lu", physMSW, physLSW);
-    }
-    else
-    {
-        printf ("\nPhysical address set fail.");
-    }
-    tx_thread_sleep (250);
-    status = nx_ip_interface_physical_address_get (&g_ip0, 0, &physMSW, &physLSW);
-
-    if (DEBUGGER)
-    {
-        if (status == NX_SUCCESS)
-        {
-            printf ("\nNew IP set:%lu", machineGlobalsBlock->ethIP);
-            printf ("\nPhysical address:%lu %lu", physMSW, physLSW);
-        }
-        else
-        {
-            printf ("\nFailed to set new IP.");
-        }
-    }
-
-    if (DEBUGGER)
     {
         printf ("\nUDP initialization complete.");
     }
 
     while (1)
     {
-
-        //        status = nx_udp_socket_send(&machineGlobalsBlock->g_udp_sck, my_packet, IP_ADDRESS(192,168,10,182), 5000);
-        //        if (NX_SUCCESS == status)
-        //        {
-        //            printf ("\nSend success.");
-        //        }
-        /* Reception is handled from UDP callbacks dispatched from
-         * IP instance thread */
-        if (machineGlobalsBlock->reportIP == 1)
-        {
-            reportIP ();
-            machineGlobalsBlock->reportIP = 0;
-        }
-        tx_thread_sleep (100);
-//        tx_thread_suspend (tx_thread_identify ());
-
+        tx_thread_suspend (tx_thread_identify ());
     }
 
 }
