@@ -47,15 +47,18 @@ void ext_irqY_callback(external_irq_callback_args_t *p_args)
 void ext_irqZ_callback(external_irq_callback_args_t *p_args)
 {
     ///Debounce and set flag
-    ioport_level_t level;
-    ssp_err_t err;
-    R_BSP_SoftwareDelay (DEBOUNCE_TIME, BSP_DELAY_UNITS_MILLISECONDS);
+//    ioport_level_t level;
+//    ssp_err_t err;
+//    R_BSP_SoftwareDelay (DEBOUNCE_TIME, BSP_DELAY_UNITS_MILLISECONDS);
+//
+//    err = g_ioport.p_api->pinRead (motorBlockZ->limit0Pin, &level);
+//    if (level == IOPORT_LEVEL_LOW)
+//    {
+//        machineGlobalsBlock->reportIP = 1;
+//    }
 
-    err = g_ioport.p_api->pinRead (motorBlockZ->limit0Pin, &level);
-    if (level == IOPORT_LEVEL_LOW)
-    {
-        machineGlobalsBlock->reportIP = 1;
-    }
+    limitHit (motorBlockZ);
+
 }
 
 void gpt_4_callback(timer_callback_args_t *p_args)
