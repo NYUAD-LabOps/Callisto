@@ -22,9 +22,64 @@ TX_BYTE_POOL USB_Byte_PoolB;
 void initMotors()
 {
     motorInitX ();
-    motorInitY ();
-    motorInitZ ();
-    motorInitA ();
+
+    motorBlockY->dirPin = IOPORT_PORT_04_PIN_11;
+    motorBlockY->stepPin = IOPORT_PORT_04_PIN_15;
+    motorBlockY->limit0Pin = IOPORT_PORT_05_PIN_12;
+    motorBlockY->start = g_timer_gpt_7.p_api->start;
+    motorBlockY->stop = g_timer_gpt_7.p_api->stop;
+    motorBlockY->dutyCycleSet = g_timer_gpt_7.p_api->dutyCycleSet;
+    motorBlockY->periodSet = g_timer_gpt_7.p_api->periodSet;
+    motorBlockY->g_timer_gpt_x = g_timer_gpt_7;
+    genericMotorInit (motorBlockY);
+
+    motorBlockA->dirPin = IOPORT_PORT_08_PIN_04;
+    motorBlockA->stepPin = IOPORT_PORT_08_PIN_03;
+    motorBlockA->start = g_timerA.p_api->start;
+    motorBlockA->stop = g_timerA.p_api->stop;
+    motorBlockA->dutyCycleSet = g_timerA.p_api->dutyCycleSet;
+    motorBlockA->periodSet = g_timerA.p_api->periodSet;
+    motorBlockA->g_timer_gpt_x = g_timerA;
+    genericMotorInit (motorBlockA);
+
+    motorBlockZ->dirPin = IOPORT_PORT_04_PIN_10;
+    motorBlockZ->stepPin = IOPORT_PORT_04_PIN_14;
+    motorBlockZ->limit0Pin = IOPORT_PORT_00_PIN_00;
+    motorBlockZ->start = g_timer_gpt_3.p_api->start;
+    motorBlockZ->stop = g_timer_gpt_3.p_api->stop;
+    motorBlockZ->dutyCycleSet = g_timer_gpt_3.p_api->dutyCycleSet;
+    motorBlockZ->periodSet = g_timer_gpt_3.p_api->periodSet;
+    motorBlockZ->g_timer_gpt_x = g_timer_gpt_3;
+    genericMotorInit (motorBlockZ);
+
+    motorBlockB->dirPin = IOPORT_PORT_03_PIN_04;
+    motorBlockB->stepPin = IOPORT_PORT_03_PIN_03;
+    motorBlockB->start = g_timerB.p_api->start;
+    motorBlockB->stop = g_timerB.p_api->stop;
+    motorBlockB->dutyCycleSet = g_timerB.p_api->dutyCycleSet;
+    motorBlockB->periodSet = g_timerB.p_api->periodSet;
+    motorBlockB->g_timer_gpt_x = g_timerB;
+    genericMotorInit (motorBlockB);
+
+    motorBlockC->dirPin = IOPORT_PORT_03_PIN_06;
+    motorBlockC->stepPin = IOPORT_PORT_03_PIN_05;
+    motorBlockC->start = g_timerC.p_api->start;
+    motorBlockC->stop = g_timerC.p_api->stop;
+    motorBlockC->dutyCycleSet = g_timerC.p_api->dutyCycleSet;
+    motorBlockC->periodSet = g_timerC.p_api->periodSet;
+    motorBlockC->g_timer_gpt_x = g_timerC;
+    genericMotorInit (motorBlockC);
+
+    motorBlockD->dirPin = IOPORT_PORT_03_PIN_09;
+    motorBlockD->stepPin = IOPORT_PORT_03_PIN_07;
+    motorBlockD->start = g_timerD.p_api->start;
+    motorBlockD->stop = g_timerD.p_api->stop;
+    motorBlockD->dutyCycleSet = g_timerD.p_api->dutyCycleSet;
+    motorBlockD->periodSet = g_timerD.p_api->periodSet;
+    motorBlockD->g_timer_gpt_x = g_timerD;
+    genericMotorInit (motorBlockD);
+
+    motorInitT ();
 
     machineGlobalsBlock->motorsInit = 1;
 }
@@ -40,27 +95,44 @@ void initMotorBlocks()
     UINT status;
     unsigned char *memory_ptr;
 
-    status = tx_block_pool_create(&my_pool2, "helixbuff2", sizeof(struct motorController), (VOID *) 0x20040000, 10000);
-
-    status = tx_block_allocate (&my_pool2, (VOID **) &memory_ptr, TX_NO_WAIT);
-    motorBlockZ = (struct motorController *) memory_ptr;
-    motorBlockZ->init = 1;
+    status = tx_block_pool_create(&my_pool2, "mtrblocks", sizeof(struct motorController), (VOID *) 0x20040000, 10000);
 
     status = tx_block_allocate (&my_pool2, (VOID **) &memory_ptr, TX_NO_WAIT);
     motorBlockX = (struct motorController *) memory_ptr;
+
     motorBlockX->init = 1;
 
     status = tx_block_allocate (&my_pool2, (VOID **) &memory_ptr, TX_NO_WAIT);
     motorBlockY = (struct motorController *) memory_ptr;
+
     motorBlockY->init = 1;
 
     status = tx_block_allocate (&my_pool2, (VOID **) &memory_ptr, TX_NO_WAIT);
     motorBlockA = (struct motorController *) memory_ptr;
     motorBlockA->init = 1;
 
-//    status = tx_block_allocate (&my_pool2, (VOID **) &memory_ptr, TX_NO_WAIT);
-//    motorBlock3 = (struct motorController *) memory_ptr;
-//    motorBlock3->init = 1;
+    status = tx_block_allocate (&my_pool2, (VOID **) &memory_ptr, TX_NO_WAIT);
+    motorBlockZ = (struct motorController *) memory_ptr;
+
+    motorBlockZ->init = 1;
+
+    status = tx_block_allocate (&my_pool2, (VOID **) &memory_ptr, TX_NO_WAIT);
+    motorBlockB = (struct motorController *) memory_ptr;
+    motorBlockB->init = 1;
+
+    status = tx_block_allocate (&my_pool2, (VOID **) &memory_ptr, TX_NO_WAIT);
+    motorBlockC = (struct motorController *) memory_ptr;
+
+    motorBlockC->init = 1;
+
+    status = tx_block_allocate (&my_pool2, (VOID **) &memory_ptr, TX_NO_WAIT);
+    motorBlockD = (struct motorController *) memory_ptr;
+
+    motorBlockD->init = 1;
+
+    status = tx_block_allocate (&my_pool2, (VOID **) &memory_ptr, TX_NO_WAIT);
+    motorBlockT = (struct motorController *) memory_ptr;
+    motorBlockT->init = 1;
 }
 
 ///Tool block initialization process.

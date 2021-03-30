@@ -68,6 +68,7 @@ void gpt_4_callback(timer_callback_args_t *p_args)
 
 void gpt_7_callback(timer_callback_args_t *p_args)
 {
+
     stepHandler (motorBlockY);
 }
 
@@ -79,7 +80,7 @@ void gpt_3_callback(timer_callback_args_t *p_args)
 
 void gpt_0_callback(timer_callback_args_t *p_args)
 {
-    stepHandler (motorBlockA);
+    stepHandler (motorBlockT);
 }
 
 void gpt_1_callback(timer_callback_args_t *p_args)
@@ -87,6 +88,25 @@ void gpt_1_callback(timer_callback_args_t *p_args)
     toolHandler (toolBlockA);
 }
 
+void gpt_MotorA_callback(timer_callback_args_t *p_args)
+{
+    stepHandler (motorBlockA);
+}
+
+void gpt_MotorB_callback(timer_callback_args_t *p_args)
+{
+    stepHandler (motorBlockB);
+}
+
+void gpt_MotorC_callback(timer_callback_args_t *p_args)
+{
+    stepHandler (motorBlockC);
+}
+
+void gpt_MotorD_callback(timer_callback_args_t *p_args)
+{
+    stepHandler (motorBlockD);
+}
 void motorInitX()
 {
     ssp_err_t err;
@@ -207,44 +227,77 @@ void motorInitZ()
     motorBlockZ->frequency = 0;
 }
 
-void motorInitA()
+void motorInitT()
 {
-    motorBlockA->homing = 0;
-    motorBlockA->dirPin = IOPORT_PORT_04_PIN_09;
-    motorBlockA->start = g_timer0.p_api->start;
-    motorBlockA->stop = g_timer0.p_api->stop;
-    motorBlockA->dutyCycleSet = g_timer0.p_api->dutyCycleSet;
-    motorBlockA->periodSet = g_timer0.p_api->periodSet;
-    motorBlockA->g_timer_gpt_x = g_timer0;
-    motorBlockA->stepSize = STEPX;
-    motorBlockA->stepPin = IOPORT_PORT_04_PIN_13;
-    motorBlockA->stepState = IOPORT_LEVEL_LOW;
-    motorBlockA->limit0Pin = IOPORT_PORT_02_PIN_02;
-    motorBlockA->defaultDir = IOPORT_LEVEL_LOW;
-    motorBlockA->targetDir = motorBlockA->defaultDir;
-    motorBlockA->targetJerkSpeed = DEFAULTJERKSPEEDX;
-    g_ioport.p_api->pinWrite (motorBlockA->dirPin, motorBlockA->defaultDir);
-    motorBlockA->dir = motorBlockA->defaultDir;
-    motorBlockA->fwdDir = IOPORT_LEVEL_LOW;
-    motorBlockA->homeSpeed = HOMEVX;
-    motorBlockA->rapidSpeed = HOMEVX;
-    motorBlockA->limit0State = IOPORT_LEVEL_HIGH;
-    motorBlockA->intervalSteps = 0;
-    motorBlockA->freqSet = 0;
-    motorBlockA->setPosSteps = 0;
-    motorBlockA->pos = 0;
-    motorBlockA->posSteps = 0;
-    motorBlockA->posAbs = 0;
-    motorBlockA->posStepsAbs = 0;
-    motorBlockA->offsetSteps = 0;
-    motorBlockA->targetSpeed = 0;
-    motorBlockA->targetFreq = 0;
-    motorBlockA->targetPosSteps = 0;
-    motorBlockA->speed = 0;
-    motorBlockA->frequency = 0;
+    motorBlockT->homing = 0;
+    motorBlockT->dirPin = IOPORT_PORT_04_PIN_09;
+    motorBlockT->start = g_timer0.p_api->start;
+    motorBlockT->stop = g_timer0.p_api->stop;
+    motorBlockT->dutyCycleSet = g_timer0.p_api->dutyCycleSet;
+    motorBlockT->periodSet = g_timer0.p_api->periodSet;
+    motorBlockT->g_timer_gpt_x = g_timer0;
+    motorBlockT->stepSize = STEPX;
+    motorBlockT->stepPin = IOPORT_PORT_04_PIN_13;
+    motorBlockT->stepState = IOPORT_LEVEL_LOW;
+    motorBlockT->limit0Pin = IOPORT_PORT_02_PIN_02;
+    motorBlockT->defaultDir = IOPORT_LEVEL_LOW;
+    motorBlockT->targetDir = motorBlockT->defaultDir;
+    motorBlockT->targetJerkSpeed = DEFAULTJERKSPEEDX;
+    g_ioport.p_api->pinWrite (motorBlockT->dirPin, motorBlockT->defaultDir);
+    motorBlockT->dir = motorBlockT->defaultDir;
+    motorBlockT->fwdDir = IOPORT_LEVEL_LOW;
+    motorBlockT->homeSpeed = HOMEVX;
+    motorBlockT->rapidSpeed = HOMEVX;
+    motorBlockT->limit0State = IOPORT_LEVEL_HIGH;
+    motorBlockT->intervalSteps = 0;
+    motorBlockT->freqSet = 0;
+    motorBlockT->setPosSteps = 0;
+    motorBlockT->pos = 0;
+    motorBlockT->posSteps = 0;
+    motorBlockT->posAbs = 0;
+    motorBlockT->posStepsAbs = 0;
+    motorBlockT->offsetSteps = 0;
+    motorBlockT->targetSpeed = 0;
+    motorBlockT->targetFreq = 0;
+    motorBlockT->targetPosSteps = 0;
+    motorBlockT->speed = 0;
+    motorBlockT->frequency = 0;
 }
 
 void toolInitA()
 {
-    toolBlockA->motorBlock = motorBlockA;
+    toolBlockA->motorBlock = motorBlockT;
+}
+
+void genericMotorInit(struct motorController *motorBlock)
+{
+    ssp_err_t err;
+    motorBlock->homing = 0;
+    motorBlock->stepSize = STEPZ;
+    motorBlock->stepState = IOPORT_LEVEL_LOW;
+    motorBlock->defaultDir = IOPORT_LEVEL_LOW;
+    motorBlock->targetDir = motorBlock->defaultDir;
+    motorBlock->targetJerkSpeed = DEFAULTJERKSPEEDZ;
+    g_ioport.p_api->pinWrite (motorBlock->dirPin, motorBlock->defaultDir);
+    motorBlock->dir = motorBlock->defaultDir;
+    motorBlock->fwdDir = IOPORT_LEVEL_HIGH;
+    motorBlock->posSteps = 0;
+    motorBlock->targetPosSteps = 0;
+    motorBlock->offsetSteps = 0;
+    motorBlock->homeSpeed = HOMEVZ;
+    motorBlock->rapidSpeed = HOMEVZ;
+    motorBlock->limit0State = IOPORT_LEVEL_HIGH;
+    motorBlock->intervalSteps = 0;
+    motorBlock->freqSet = 0;
+    motorBlock->setPosSteps = 0;
+    motorBlock->pos = 0;
+    motorBlock->posSteps = 0;
+    motorBlock->posAbs = 0;
+    motorBlock->posStepsAbs = 0;
+    motorBlock->offsetSteps = 0;
+    motorBlock->targetSpeed = 0;
+    motorBlock->targetFreq = 0;
+    motorBlock->targetPosSteps = 0;
+    motorBlock->speed = 0;
+    motorBlock->frequency = 0;
 }

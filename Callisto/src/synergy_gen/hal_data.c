@@ -1,5 +1,89 @@
 /* generated HAL source file - do not edit */
 #include "hal_data.h"
+#if (0) != BSP_IRQ_DISABLED
+#if !defined(SSP_SUPPRESS_ISR_g_timerD) && !defined(SSP_SUPPRESS_ISR_GPT8)
+SSP_VECTOR_DEFINE_CHAN(gpt_counter_overflow_isr, GPT, COUNTER_OVERFLOW, 8);
+#endif
+#endif
+static gpt_instance_ctrl_t g_timerD_ctrl;
+static const timer_on_gpt_cfg_t g_timerD_extend =
+{ .gtioca =
+{ .output_enabled = false, .stop_level = GPT_PIN_LEVEL_LOW },
+  .gtiocb =
+  { .output_enabled = false, .stop_level = GPT_PIN_LEVEL_LOW },
+  .shortest_pwm_signal = GPT_SHORTEST_LEVEL_OFF, };
+static const timer_cfg_t g_timerD_cfg =
+{ .mode = TIMER_MODE_PERIODIC, .period = 10, .unit = TIMER_UNIT_PERIOD_MSEC, .duty_cycle = 50, .duty_cycle_unit =
+          TIMER_PWM_UNIT_RAW_COUNTS,
+  .channel = 8, .autostart = false, .p_callback = gpt_MotorD_callback, .p_context = &g_timerD, .p_extend =
+          &g_timerD_extend,
+  .irq_ipl = (0), };
+/* Instance structure to use this module. */
+const timer_instance_t g_timerD =
+{ .p_ctrl = &g_timerD_ctrl, .p_cfg = &g_timerD_cfg, .p_api = &g_timer_on_gpt };
+#if (0) != BSP_IRQ_DISABLED
+#if !defined(SSP_SUPPRESS_ISR_g_timerC) && !defined(SSP_SUPPRESS_ISR_GPT6)
+SSP_VECTOR_DEFINE_CHAN(gpt_counter_overflow_isr, GPT, COUNTER_OVERFLOW, 6);
+#endif
+#endif
+static gpt_instance_ctrl_t g_timerC_ctrl;
+static const timer_on_gpt_cfg_t g_timerC_extend =
+{ .gtioca =
+{ .output_enabled = false, .stop_level = GPT_PIN_LEVEL_LOW },
+  .gtiocb =
+  { .output_enabled = false, .stop_level = GPT_PIN_LEVEL_LOW },
+  .shortest_pwm_signal = GPT_SHORTEST_LEVEL_OFF, };
+static const timer_cfg_t g_timerC_cfg =
+{ .mode = TIMER_MODE_PERIODIC, .period = 10, .unit = TIMER_UNIT_PERIOD_MSEC, .duty_cycle = 50, .duty_cycle_unit =
+          TIMER_PWM_UNIT_RAW_COUNTS,
+  .channel = 6, .autostart = false, .p_callback = gpt_MotorC_callback, .p_context = &g_timerC, .p_extend =
+          &g_timerC_extend,
+  .irq_ipl = (0), };
+/* Instance structure to use this module. */
+const timer_instance_t g_timerC =
+{ .p_ctrl = &g_timerC_ctrl, .p_cfg = &g_timerC_cfg, .p_api = &g_timer_on_gpt };
+#if (0) != BSP_IRQ_DISABLED
+#if !defined(SSP_SUPPRESS_ISR_g_timerB) && !defined(SSP_SUPPRESS_ISR_GPT5)
+SSP_VECTOR_DEFINE_CHAN(gpt_counter_overflow_isr, GPT, COUNTER_OVERFLOW, 5);
+#endif
+#endif
+static gpt_instance_ctrl_t g_timerB_ctrl;
+static const timer_on_gpt_cfg_t g_timerB_extend =
+{ .gtioca =
+{ .output_enabled = false, .stop_level = GPT_PIN_LEVEL_LOW },
+  .gtiocb =
+  { .output_enabled = false, .stop_level = GPT_PIN_LEVEL_LOW },
+  .shortest_pwm_signal = GPT_SHORTEST_LEVEL_OFF, };
+static const timer_cfg_t g_timerB_cfg =
+{ .mode = TIMER_MODE_PERIODIC, .period = 10, .unit = TIMER_UNIT_PERIOD_MSEC, .duty_cycle = 50, .duty_cycle_unit =
+          TIMER_PWM_UNIT_RAW_COUNTS,
+  .channel = 5, .autostart = false, .p_callback = gpt_MotorB_callback, .p_context = &g_timerB, .p_extend =
+          &g_timerB_extend,
+  .irq_ipl = (0), };
+/* Instance structure to use this module. */
+const timer_instance_t g_timerB =
+{ .p_ctrl = &g_timerB_ctrl, .p_cfg = &g_timerB_cfg, .p_api = &g_timer_on_gpt };
+#if (0) != BSP_IRQ_DISABLED
+#if !defined(SSP_SUPPRESS_ISR_g_timerA) && !defined(SSP_SUPPRESS_ISR_GPT2)
+SSP_VECTOR_DEFINE_CHAN(gpt_counter_overflow_isr, GPT, COUNTER_OVERFLOW, 2);
+#endif
+#endif
+static gpt_instance_ctrl_t g_timerA_ctrl;
+static const timer_on_gpt_cfg_t g_timerA_extend =
+{ .gtioca =
+{ .output_enabled = false, .stop_level = GPT_PIN_LEVEL_LOW },
+  .gtiocb =
+  { .output_enabled = false, .stop_level = GPT_PIN_LEVEL_LOW },
+  .shortest_pwm_signal = GPT_SHORTEST_LEVEL_OFF, };
+static const timer_cfg_t g_timerA_cfg =
+{ .mode = TIMER_MODE_PERIODIC, .period = 10, .unit = TIMER_UNIT_PERIOD_MSEC, .duty_cycle = 50, .duty_cycle_unit =
+          TIMER_PWM_UNIT_RAW_COUNTS,
+  .channel = 2, .autostart = false, .p_callback = gpt_MotorA_callback, .p_context = &g_timerA, .p_extend =
+          &g_timerA_extend,
+  .irq_ipl = (0), };
+/* Instance structure to use this module. */
+const timer_instance_t g_timerA =
+{ .p_ctrl = &g_timerA_ctrl, .p_cfg = &g_timerA_cfg, .p_api = &g_timer_on_gpt };
 #if (6) != BSP_IRQ_DISABLED
 #if !defined(SSP_SUPPRESS_ISR_g_timer1) && !defined(SSP_SUPPRESS_ISR_GPT1)
 SSP_VECTOR_DEFINE_CHAN(gpt_counter_overflow_isr, GPT, COUNTER_OVERFLOW, 1);

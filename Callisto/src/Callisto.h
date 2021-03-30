@@ -175,7 +175,7 @@ struct motorController
     required by Renesas functions when starting, stopping, or otherwise adjusting the activity
     of a GPT timer.*/
     timer_instance_t g_timer_gpt_x;
-} *motorBlockX, *motorBlockY, *motorBlockZ, *motorBlockA;
+} *motorBlockX, *motorBlockY, *motorBlockZ, *motorBlockT, *motorBlockA, *motorBlockB, *motorBlockC, *motorBlockD;
 
 
 struct toolBlock

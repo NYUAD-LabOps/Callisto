@@ -37,7 +37,7 @@ void ToolA_entry(void)
 
     while (1)
     {
-        motorHandler (toolBlockA->motorBlock);
+//        motorHandler (toolBlockA->motorBlock);
         tx_thread_sleep (1);
     }
 }

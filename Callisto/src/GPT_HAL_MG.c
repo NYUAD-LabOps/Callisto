@@ -120,6 +120,17 @@ ssp_err_t open_timers(void)
     err = g_timer1.p_api->open (g_timer1.p_ctrl, g_timer1.p_cfg); // Open timers
     error_handle (err, "open failed");
 
+    err = g_timerA.p_api->open (g_timerA.p_ctrl, g_timerA.p_cfg); // Open timers
+    error_handle (err, "open failed");
+
+    err = g_timerB.p_api->open (g_timerB.p_ctrl, g_timerB.p_cfg); // Open timers
+    error_handle (err, "open failed");
+
+    err = g_timerC.p_api->open (g_timerC.p_ctrl, g_timerC.p_cfg); // Open timers
+    error_handle (err, "open failed");
+
+    err = g_timerD.p_api->open (g_timerD.p_ctrl, g_timerD.p_cfg); // Open timers
+    error_handle (err, "open failed");
 //    err = g_timer_gpt_1.p_api->open(g_timer_gpt_1.p_ctrl, g_timer_gpt_1.p_cfg);
 //    error_handle(err, "open failed");
 

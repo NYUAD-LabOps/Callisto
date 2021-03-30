@@ -1,13 +1,13 @@
 #include <Callisto.h>
-#include "MotorZ.h"
+#include "MotorC.h"
 
-/* MotorZ entry function */
-void MotorZ_entry(void)
+/* MotorC entry function */
+void MotorC_entry(void)
 {
     /* TODO: add your own code here */
     while (1)
     {
-        motorHandler (motorBlockZ);
+        motorHandler (motorBlockC);
         tx_thread_sleep (1);
     }
 }

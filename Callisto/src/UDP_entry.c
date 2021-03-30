@@ -393,6 +393,23 @@ void processUDP(char *UDPRx)
                         }
                     }
                 break;
+                case 'a':
+                    if (UDPRx[2] == 'f')
+                    {
+                        motorBlockA->targetDir = motorBlockA->fwdDir;
+                    }
+                    else
+                    {
+                        if (motorBlockA->fwdDir == IOPORT_LEVEL_HIGH)
+                        {
+                            motorBlockA->targetDir = IOPORT_LEVEL_LOW;
+                        }
+                        else
+                        {
+                            motorBlockA->targetDir = IOPORT_LEVEL_HIGH;
+                        }
+                    }
+                break;
                 case 'z':
                     if (UDPRx[2] == 'f')
                     {
@@ -410,7 +427,58 @@ void processUDP(char *UDPRx)
                         }
                     }
                 break;
-                case 'a':
+                case 'b':
+                    if (UDPRx[2] == 'f')
+                    {
+                        motorBlockB->targetDir = motorBlockB->fwdDir;
+                    }
+                    else
+                    {
+                        if (motorBlockB->fwdDir == IOPORT_LEVEL_HIGH)
+                        {
+                            motorBlockB->targetDir = IOPORT_LEVEL_LOW;
+                        }
+                        else
+                        {
+                            motorBlockB->targetDir = IOPORT_LEVEL_HIGH;
+                        }
+                    }
+                break;
+                case 'c':
+                    if (UDPRx[2] == 'f')
+                    {
+                        motorBlockC->targetDir = motorBlockC->fwdDir;
+                    }
+                    else
+                    {
+                        if (motorBlockC->fwdDir == IOPORT_LEVEL_HIGH)
+                        {
+                            motorBlockC->targetDir = IOPORT_LEVEL_LOW;
+                        }
+                        else
+                        {
+                            motorBlockC->targetDir = IOPORT_LEVEL_HIGH;
+                        }
+                    }
+                break;
+                case 'd':
+                    if (UDPRx[2] == 'f')
+                    {
+                        motorBlockD->targetDir = motorBlockD->fwdDir;
+                    }
+                    else
+                    {
+                        if (motorBlockD->fwdDir == IOPORT_LEVEL_HIGH)
+                        {
+                            motorBlockD->targetDir = IOPORT_LEVEL_LOW;
+                        }
+                        else
+                        {
+                            motorBlockD->targetDir = IOPORT_LEVEL_HIGH;
+                        }
+                    }
+                break;
+                case 't':
                     if (UDPRx[2] == 'f')
                     {
                         toolBlockA->motorBlock->targetDir = toolBlockA->motorBlock->fwdDir;
@@ -448,6 +516,34 @@ void processUDP(char *UDPRx)
                     motorBlockY->targetFreq = data;
                     motorBlockY->freqSet = 1;
                 break;
+                case 'a':
+
+                    memcpy (&data, (UDPRx + 2), 8);
+
+                    motorBlockA->targetFreq = data;
+                    motorBlockA->freqSet = 1;
+                break;
+                case 'b':
+
+                    memcpy (&data, (UDPRx + 2), 8);
+
+                    motorBlockB->targetFreq = data;
+                    motorBlockB->freqSet = 1;
+                break;
+                case 'c':
+
+                    memcpy (&data, (UDPRx + 2), 8);
+
+                    motorBlockC->targetFreq = data;
+                    motorBlockC->freqSet = 1;
+                break;
+                case 'd':
+
+                    memcpy (&data, (UDPRx + 2), 8);
+
+                    motorBlockD->targetFreq = data;
+                    motorBlockD->freqSet = 1;
+                break;
                 case 'z':
 
                     memcpy (&data, (UDPRx + 2), 8);
@@ -455,7 +551,7 @@ void processUDP(char *UDPRx)
                     motorBlockZ->targetFreq = data;
                     motorBlockZ->freqSet = 1;
                 break;
-                case 'a':
+                case 't':
 
                     memcpy (&data, (UDPRx + 2), 8);
 
@@ -631,10 +727,22 @@ void processUDP(char *UDPRx)
                 case 'y':
                     stopMotor (motorBlockY);
                 break;
+                case 'a':
+                    stopMotor (motorBlockA);
+                break;
+                case 'b':
+                    stopMotor (motorBlockB);
+                break;
+                case 'c':
+                    stopMotor (motorBlockC);
+                break;
+                case 'd':
+                    stopMotor (motorBlockD);
+                break;
                 case 'z':
                     stopMotor (motorBlockZ);
                 break;
-                case 'a':
+                case 't':
                     stopMotor (toolBlockA->motorBlock);
                 break;
                 default:
@@ -744,7 +852,7 @@ static void g_udp_sck_receive_cb(NX_UDP_SOCKET *p_sck)
         //        nx_udp_source_extract (p_packet, &srcIP, &srcPort);
 
         ///Don't send an echo for IP packets. Primary does not have event flag for it.
-        if (buff[0] != 'a' && buff[1] != 'a')
+        if (buff[0] != 'a' || buff[1] != 'a')
         {
             p_packet->nx_packet_prepend_ptr[0] = 'A';
             p_packet->nx_packet_prepend_ptr[1] = 'C';
@@ -792,7 +900,7 @@ static void g_udp_sck_receive_cb(NX_UDP_SOCKET *p_sck)
 
 }
 
-void setMacAddress (nx_mac_address_t*_pMacAddress)
+void setMacAddress(nx_mac_address_t *_pMacAddress)
 
 {
 
@@ -800,16 +908,12 @@ void setMacAddress (nx_mac_address_t*_pMacAddress)
 
     fmi_unique_id_t id;
 
-    g_fmi.p_api->uniqueIdGet(&id);
+    g_fmi.p_api->uniqueIdGet (&id);
 
-    ULONG lowerHalfMac=((0x55000000)|(id.unique_id[0]&(0x00FFFFFF)));
+    ULONG lowerHalfMac = ((0x55000000) | (id.unique_id[0] & (0x00FFFFFF)));
 
+    _pMacAddress->nx_mac_address_h = 0x0030;
 
-
-    _pMacAddress->nx_mac_address_h=0x0030;
-
-    _pMacAddress->nx_mac_address_l=lowerHalfMac;
-
-
+    _pMacAddress->nx_mac_address_l = lowerHalfMac;
 
 }

@@ -8,6 +8,10 @@ extern void MotorY_create(void);
 extern void MotorZ_create(void);
 extern void UDP_create(void);
 extern void ToolA_create(void);
+extern void MotorA_create(void);
+extern void MotorB_create(void);
+extern void MotorC_create(void);
+extern void MotorD_create(void);
 
 uint32_t g_ssp_common_thread_count;
 bool g_ssp_common_initialized;
@@ -68,6 +72,10 @@ void tx_application_define(void *first_unused_memory)
     MotorZ_create ();
     UDP_create ();
     ToolA_create ();
+    MotorA_create ();
+    MotorB_create ();
+    MotorC_create ();
+    MotorD_create ();
 
 #ifdef TX_USER_ENABLE_TRACE
     TX_USER_ENABLE_TRACE;
