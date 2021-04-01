@@ -15,7 +15,8 @@ double prevTargetSpeed, origSpeed;
 
     ///If the frequency adjustment flag is active, set the motor speed accordingly,
     /// else calculate and set frequency according to target speed and step size.
-    if (motorBlock->limit0State == IOPORT_LEVEL_HIGH && motorBlock->homing == 0)
+    ///if (motorBlock->limit0State == IOPORT_LEVEL_HIGH && motorBlock->homing == 0)
+    if (motorBlock->homing == 0)
     {
         ///First check if it's to be set per frequency or speed
         if (motorBlock->freqSet == 1)

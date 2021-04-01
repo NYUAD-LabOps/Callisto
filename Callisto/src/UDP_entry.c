@@ -91,6 +91,18 @@ void UDP_entry(void)
         printf ("\nUDP initialization complete.");
     }
 
+    while (machineGlobalsBlock->motorsInit != 1){
+        tx_thread_sleep(10);
+    }
+
+    tx_thread_sleep(500);
+    memset(machineGlobalsBlock->UDPTxBuff, 0, UDPMSGLENGTH);
+    machineGlobalsBlock->UDPTxBuff[0] = 'I';
+    machineGlobalsBlock->UDPTxBuff[1] = 'N';
+    machineGlobalsBlock->UDPTxBuff[2] = 'I';
+    UDPSend ();
+    memset(machineGlobalsBlock->UDPTxBuff, 0, UDPMSGLENGTH);
+
     while (1)
     {
         tx_thread_suspend (tx_thread_identify ());
@@ -174,12 +186,32 @@ void processUDP(char *UDPRx)
 
                     motorBlockY->stepSize = data;
                 break;
+                case 'a':
+                    memcpy (&data, (UDPRx + 2), 8);
+
+                    motorBlockA->stepSize = data;
+                break;
                 case 'z':
                     memcpy (&data, (UDPRx + 2), 8);
 
                     motorBlockZ->stepSize = data;
                 break;
-                case 'a':
+                case 'b':
+                    memcpy (&data, (UDPRx + 2), 8);
+
+                    motorBlockB->stepSize = data;
+                break;
+                case 'c':
+                    memcpy (&data, (UDPRx + 2), 8);
+
+                    motorBlockC->stepSize = data;
+                break;
+                case 'd':
+                    memcpy (&data, (UDPRx + 2), 8);
+
+                    motorBlockD->stepSize = data;
+                break;
+                case 't':
                     memcpy (&data, (UDPRx + 2), 8);
 
                     toolBlockA->motorBlock->stepSize = data;
@@ -212,6 +244,16 @@ void processUDP(char *UDPRx)
                         motorBlockY->fwdDir = IOPORT_LEVEL_LOW;
                     }
                 break;
+                case 'a':
+                    if (UDPRx[2] == 'h')
+                    {
+                        motorBlockA->fwdDir = IOPORT_LEVEL_HIGH;
+                    }
+                    else
+                    {
+                        motorBlockA->fwdDir = IOPORT_LEVEL_LOW;
+                    }
+                break;
                 case 'z':
                     if (UDPRx[2] == 'h')
                     {
@@ -222,7 +264,37 @@ void processUDP(char *UDPRx)
                         motorBlockZ->fwdDir = IOPORT_LEVEL_LOW;
                     }
                 break;
-                case 'a':
+                case 'b':
+                    if (UDPRx[2] == 'h')
+                    {
+                        motorBlockB->fwdDir = IOPORT_LEVEL_HIGH;
+                    }
+                    else
+                    {
+                        motorBlockB->fwdDir = IOPORT_LEVEL_LOW;
+                    }
+                break;
+                case 'c':
+                    if (UDPRx[2] == 'h')
+                    {
+                        motorBlockC->fwdDir = IOPORT_LEVEL_HIGH;
+                    }
+                    else
+                    {
+                        motorBlockC->fwdDir = IOPORT_LEVEL_LOW;
+                    }
+                break;
+                case 'd':
+                    if (UDPRx[2] == 'h')
+                    {
+                        motorBlockD->fwdDir = IOPORT_LEVEL_HIGH;
+                    }
+                    else
+                    {
+                        motorBlockD->fwdDir = IOPORT_LEVEL_LOW;
+                    }
+                break;
+                case 't':
                     if (UDPRx[2] == 'h')
                     {
                         toolBlockA->motorBlock->fwdDir = IOPORT_LEVEL_HIGH;
@@ -258,6 +330,16 @@ void processUDP(char *UDPRx)
                         motorBlockY->defaultDir = IOPORT_LEVEL_LOW;
                     }
                 break;
+                case 'a':
+                    if (UDPRx[2] == 'h')
+                    {
+                        motorBlockA->defaultDir = IOPORT_LEVEL_HIGH;
+                    }
+                    else
+                    {
+                        motorBlockA->defaultDir = IOPORT_LEVEL_LOW;
+                    }
+                break;
                 case 'z':
                     if (UDPRx[2] == 'h')
                     {
@@ -266,6 +348,36 @@ void processUDP(char *UDPRx)
                     else
                     {
                         motorBlockZ->defaultDir = IOPORT_LEVEL_LOW;
+                    }
+                break;
+                case 'b':
+                    if (UDPRx[2] == 'h')
+                    {
+                        motorBlockB->defaultDir = IOPORT_LEVEL_HIGH;
+                    }
+                    else
+                    {
+                        motorBlockB->defaultDir = IOPORT_LEVEL_LOW;
+                    }
+                break;
+                case 'c':
+                    if (UDPRx[2] == 'h')
+                    {
+                        motorBlockC->defaultDir = IOPORT_LEVEL_HIGH;
+                    }
+                    else
+                    {
+                        motorBlockC->defaultDir = IOPORT_LEVEL_LOW;
+                    }
+                break;
+                case 'd':
+                    if (UDPRx[2] == 'h')
+                    {
+                        motorBlockD->defaultDir = IOPORT_LEVEL_HIGH;
+                    }
+                    else
+                    {
+                        motorBlockD->defaultDir = IOPORT_LEVEL_LOW;
                     }
                 break;
             }
@@ -284,12 +396,32 @@ void processUDP(char *UDPRx)
 
                     motorBlockY->homeSpeed = data;
                 break;
+                case 'a':
+                    memcpy (&data, (UDPRx + 2), 8);
+
+                    motorBlockA->homeSpeed = data;
+                break;
                 case 'z':
                     memcpy (&data, (UDPRx + 2), 8);
 
                     motorBlockZ->homeSpeed = data;
                 break;
-                case 'a':
+                case 'b':
+                    memcpy (&data, (UDPRx + 2), 8);
+
+                    motorBlockB->homeSpeed = data;
+                break;
+                case 'c':
+                    memcpy (&data, (UDPRx + 2), 8);
+
+                    motorBlockC->homeSpeed = data;
+                break;
+                case 'd':
+                    memcpy (&data, (UDPRx + 2), 8);
+
+                    motorBlockD->homeSpeed = data;
+                break;
+                case 't':
                     memcpy (&data, (UDPRx + 2), 8);
 
                     toolBlockA->motorBlock->homeSpeed = data;
@@ -302,7 +434,7 @@ void processUDP(char *UDPRx)
             ///Set tool temperature
             switch (UDPRx[1])
             {
-                case 'a':
+                case 't':
                     memcpy (&data, (UDPRx + 2), 8);
 
                     toolBlockA->tempSet = data;
@@ -315,7 +447,7 @@ void processUDP(char *UDPRx)
             ///Send tool temperature to master
             switch (UDPRx[1])
             {
-                case 'a':
+                case 't':
                     memcpy ((machineGlobalsBlock->UDPTxBuff + 2), &toolBlockA->tempRead, 8);
                 break;
                 default:
@@ -345,10 +477,22 @@ void processUDP(char *UDPRx)
                 case 'y':
                     calRoutine (motorBlockY);
                 break;
+                case 'a':
+                    calRoutine (motorBlockA);
+                break;
                 case 'z':
                     calRoutine (motorBlockZ);
                 break;
-                case 'a':
+                case 'b':
+                    calRoutine (motorBlockB);
+                break;
+                case 'c':
+                    calRoutine (motorBlockC);
+                break;
+                case 'd':
+                    calRoutine (motorBlockD);
+                break;
+                case 't':
                     calRoutine (toolBlockA->motorBlock);
                 break;
                 default:
