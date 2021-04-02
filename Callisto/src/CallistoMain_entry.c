@@ -43,6 +43,7 @@ void ext_irqX_callback(external_irq_callback_args_t *p_args)
 void ext_irqY_callback(external_irq_callback_args_t *p_args)
 {
     limitHit (motorBlockY);
+    limitHit (motorBlockA);
 }
 void ext_irqZ_callback(external_irq_callback_args_t *p_args)
 {

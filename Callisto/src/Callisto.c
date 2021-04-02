@@ -26,7 +26,7 @@ void initMotors()
 
     motorBlockY->dirPin = IOPORT_PORT_04_PIN_11;
     motorBlockY->stepPin = IOPORT_PORT_04_PIN_15;
-    motorBlockY->limit0Pin = IOPORT_PORT_05_PIN_12;
+    motorBlockY->limit0Pin = IOPORT_PORT_04_PIN_08;
     motorBlockY->start = g_timer_gpt_7.p_api->start;
     motorBlockY->stop = g_timer_gpt_7.p_api->stop;
     motorBlockY->dutyCycleSet = g_timer_gpt_7.p_api->dutyCycleSet;
@@ -37,6 +37,7 @@ void initMotors()
 
     motorBlockA->dirPin = IOPORT_PORT_08_PIN_04;
     motorBlockA->stepPin = IOPORT_PORT_08_PIN_03;
+    motorBlockA->limit0Pin = IOPORT_PORT_04_PIN_08;
     motorBlockA->start = g_timerA.p_api->start;
     motorBlockA->stop = g_timerA.p_api->stop;
     motorBlockA->dutyCycleSet = g_timerA.p_api->dutyCycleSet;

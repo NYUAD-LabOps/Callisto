@@ -95,13 +95,13 @@ void UDP_entry(void)
         tx_thread_sleep(10);
     }
 
-    tx_thread_sleep(500);
-    memset(machineGlobalsBlock->UDPTxBuff, 0, UDPMSGLENGTH);
-    machineGlobalsBlock->UDPTxBuff[0] = 'I';
-    machineGlobalsBlock->UDPTxBuff[1] = 'N';
-    machineGlobalsBlock->UDPTxBuff[2] = 'I';
-    UDPSend ();
-    memset(machineGlobalsBlock->UDPTxBuff, 0, UDPMSGLENGTH);
+//    tx_thread_sleep(500);
+//    memset(machineGlobalsBlock->UDPTxBuff, 0, UDPMSGLENGTH);
+//    machineGlobalsBlock->UDPTxBuff[0] = 'I';
+//    machineGlobalsBlock->UDPTxBuff[1] = 'N';
+//    machineGlobalsBlock->UDPTxBuff[2] = 'I';
+//    UDPSend ();
+//    memset(machineGlobalsBlock->UDPTxBuff, 0, UDPMSGLENGTH);
 
     while (1)
     {
@@ -745,6 +745,9 @@ void processUDP(char *UDPRx)
                 break;
                 case 'y':
                     motorBlockY->homing = 1;
+                break;
+                case 'a':
+                    motorBlockA->homing = 1;
                 break;
                 case 'z':
                     motorBlockZ->homing = 1;
