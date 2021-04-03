@@ -914,7 +914,9 @@ void processUDP(char *UDPRx)
             ///Master will request slave status.
             machineGlobalsBlock->UDPTxBuff[0] = 't';
             machineGlobalsBlock->UDPTxBuff[1] = 'x';
-            if (motorBlockX->homing == 1 || motorBlockY->homing == 1 || motorBlockZ->homing == 1)
+            if (motorBlockX->homing == 1 || motorBlockY->homing == 1 || motorBlockA->homing == 1
+                    || motorBlockZ->homing == 1 || motorBlockB->homing == 1 || motorBlockC->homing == 1
+                    || motorBlockD->homing == 1)
             {
                 machineGlobalsBlock->UDPTxBuff[2] = '1';
             }

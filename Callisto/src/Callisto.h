@@ -25,7 +25,7 @@
 #define DEFAULTJERKSPEEDX 500
 #define DEFAULTJERKSPEEDY 500
 #define DEFAULTJERKSPEEDZ 500
-#define HOME_BACKOFF 200 ///Time in milliseconds the motor runs when reversing away from limit.
+#define HOME_BACKOFF 250 ///Time in milliseconds the motor runs when reversing away from limit.
 #define HOMEVX 3600
 #define HOMEVY 3600
 #define HOMEVZ 3600
