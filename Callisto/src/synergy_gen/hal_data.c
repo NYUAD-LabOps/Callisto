@@ -199,7 +199,7 @@ SSP_VECTOR_DEFINE(icu_irq_isr, ICU, IRQ2);
 static icu_instance_ctrl_t g_external_irqZ_ctrl;
 static const external_irq_cfg_t g_external_irqZ_cfg =
 { .channel = 2,
-  .trigger = EXTERNAL_IRQ_TRIG_FALLING,
+  .trigger = EXTERNAL_IRQ_TRIG_BOTH_EDGE,
   .filter_enable = true,
   .pclk_div = EXTERNAL_IRQ_PCLK_DIV_BY_64,
   .autostart = true,

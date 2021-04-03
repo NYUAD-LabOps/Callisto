@@ -59,6 +59,9 @@ void ext_irqZ_callback(external_irq_callback_args_t *p_args)
 //    }
 
     limitHit (motorBlockZ);
+    limitHit (motorBlockB);
+    limitHit (motorBlockC);
+    limitHit (motorBlockD);
 
 }
 

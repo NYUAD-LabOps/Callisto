@@ -112,11 +112,11 @@ Synergy Configuration
       P302 86 - - - - Disabled - - "BUS0: A07; GLCDC0: LCD_DATA14; GPT4: GTIOCA; IRQ0: IRQ05; OPS0: GTOUUP; SCI2: SDA; SCI2: TXD_MOSI; SPI1: SSL3" 
       P303 85 GPIO GPIO39 Low - "Output mode (Initial Low)" CMOS None "BUS0: A08; GLCDC0: LCD_DATA15; GPT7: GTIOCB" 
       P304 82 GPIO - Low None "Output mode (Initial Low)" CMOS None "BUS0: A09; GLCDC0: LCD_DATA16; GPT7: GTIOCA; IRQ0: IRQ09; SCI6: RXD_MISO; SCI6: SCL" 
-      P305 81 - - - - Disabled - - "BUS0: A10; GLCDC0: LCD_DATA17; IRQ0: IRQ08; SCI6: SDA; SCI6: TXD_MOSI" 
-      P306 80 - - - - Disabled - - "BUS0: A11; GLCDC0: LCD_DATA18; SCI6: SCK" 
-      P307 79 GPIO GPIO36 Medium - "Output mode (Initial Low)" CMOS None "BUS0: A12; GLCDC0: LCD_DATA19; SCI6: CTS_RTS_SS" 
+      P305 81 GPIO - Low None "Output mode (Initial Low)" CMOS None "BUS0: A10; GLCDC0: LCD_DATA17; IRQ0: IRQ08; SCI6: SDA; SCI6: TXD_MOSI" 
+      P306 80 GPIO - Low - "Output mode (Initial Low)" CMOS None "BUS0: A11; GLCDC0: LCD_DATA18; SCI6: SCK" 
+      P307 79 GPIO GPIO36 Low - "Output mode (Initial Low)" CMOS None "BUS0: A12; GLCDC0: LCD_DATA19; SCI6: CTS_RTS_SS" 
       P308 78 GPIO GPIO35 - - "Input mode" - None "BUS0: A13; GLCDC0: LCD_DATA20" 
-      P309 77 GPIO GPIO34 Medium - "Output mode (Initial Low)" CMOS None "BUS0: A14; GLCDC0: LCD_DATA21" 
+      P309 77 GPIO GPIO34 Low - "Output mode (Initial Low)" CMOS None "BUS0: A14; GLCDC0: LCD_DATA21" 
       P310 76 GPIO GPIO33 - - "Input mode" - None "BUS0: A15; GLCDC0: LCD_DATA22" 
       P311 75 GPIO GPIO32 - - "Input mode" - None "BUS0: CS2_RAS; GLCDC0: LCD_DATA23" 
       P312 74 GPIO GPIO31 - - "Input mode" - None "BUS0: CS3_CAS" 
@@ -438,7 +438,7 @@ Synergy Configuration
     Instance "g_external_irqZ External IRQ Driver on r_icu"
       Name: g_external_irqZ
       Channel: 2
-      Trigger: Falling
+      Trigger: Both Edges
       Digital Filtering: Enabled
       Digital Filtering Sample Clock (Only valid when Digital Filtering is Enabled): PCLK / 64
       Interrupt enabled after initialization: True

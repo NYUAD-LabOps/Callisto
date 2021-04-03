@@ -91,8 +91,9 @@ void UDP_entry(void)
         printf ("\nUDP initialization complete.");
     }
 
-    while (machineGlobalsBlock->motorsInit != 1){
-        tx_thread_sleep(10);
+    while (machineGlobalsBlock->motorsInit != 1)
+    {
+        tx_thread_sleep (10);
     }
 
 //    tx_thread_sleep(500);
@@ -752,6 +753,15 @@ void processUDP(char *UDPRx)
                 case 'z':
                     motorBlockZ->homing = 1;
                 break;
+                case 'b':
+                    motorBlockB->homing = 1;
+                break;
+                case 'c':
+                    motorBlockC->homing = 1;
+                break;
+                case 'd':
+                    motorBlockD->homing = 1;
+                break;
                 default:
                 break;
             }
@@ -761,8 +771,12 @@ void processUDP(char *UDPRx)
             motorBlockX->freqSet = UDPRx[2];
 
             motorBlockY->freqSet = UDPRx[2];
+            motorBlockA->freqSet = UDPRx[2];
 
             motorBlockZ->freqSet = UDPRx[2];
+            motorBlockB->freqSet = UDPRx[2];
+            motorBlockC->freqSet = UDPRx[2];
+            motorBlockD->freqSet = UDPRx[2];
 
             toolBlockA->motorBlock->freqSet = UDPRx[2];
         break;
@@ -944,11 +958,27 @@ void processUDP(char *UDPRx)
                     memcpy (&data, (UDPRx + 2), 8);
                     motorBlockY->targetSpeed = data;
                 break;
+                case 'a':
+                    memcpy (&data, (UDPRx + 2), 8);
+                    motorBlockA->targetSpeed = data;
+                break;
                 case 'z':
                     memcpy (&data, (UDPRx + 2), 8);
                     motorBlockZ->targetSpeed = data;
                 break;
-                case 'a':
+                case 'b':
+                    memcpy (&data, (UDPRx + 2), 8);
+                    motorBlockB->targetSpeed = data;
+                break;
+                case 'c':
+                    memcpy (&data, (UDPRx + 2), 8);
+                    motorBlockC->targetSpeed = data;
+                break;
+                case 'd':
+                    memcpy (&data, (UDPRx + 2), 8);
+                    motorBlockD->targetSpeed = data;
+                break;
+                case 't':
                     memcpy (&data, (UDPRx + 2), 8);
                     toolBlockA->motorBlock->targetSpeed = data;
                 break;
@@ -960,12 +990,20 @@ void processUDP(char *UDPRx)
             {
                 motorBlockX->posSteps = 0;
                 motorBlockY->posSteps = 0;
+                motorBlockA->posSteps = 0;
                 motorBlockZ->posSteps = 0;
+                motorBlockB->posSteps = 0;
+                motorBlockC->posSteps = 0;
+                motorBlockD->posSteps = 0;
                 toolBlockA->motorBlock->posSteps = 0;
 
                 motorBlockX->pos = 0;
                 motorBlockY->pos = 0;
+                motorBlockA->pos = 0;
                 motorBlockZ->pos = 0;
+                motorBlockB->pos = 0;
+                motorBlockC->pos = 0;
+                motorBlockD->pos = 0;
                 toolBlockA->motorBlock->pos = 0;
             }
         break;
