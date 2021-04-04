@@ -30,7 +30,7 @@
 #define HOMEVY 3600
 #define HOMEVZ 3600
 #define MINV 100
-#define DEBOUNCE_TIME 10 //time in milliseconds for debouncing delay
+#define DEBOUNCE_TIME 75 //time in milliseconds for debouncing delay
 
 //long double pi=acos(-1.0L)
 
