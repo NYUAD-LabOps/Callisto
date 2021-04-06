@@ -739,7 +739,7 @@ void processUDP(char *UDPRx)
                     motorBlockZ->targetFreq = data;
                     motorBlockZ->freqSet = 1;
                 break;
-                case 'a':
+                case 't':
                     memcpy (&data, (UDPRx + 2), 8);
 
                     toolBlockA->motorBlock->targetFreq = data;
