@@ -639,6 +639,23 @@ Synergy Configuration
       Callback: gpt_MotorD_callback
       Overflow Interrupt Priority: Priority 0 (highest)
       
+    Instance "g_timerT Timer Driver on r_gpt"
+      Name: g_timerT
+      Channel: 9
+      Mode: Periodic
+      Duty Cycle Range (only applicable in PWM mode): Shortest: 2 PCLK, Longest: (Period - 1) PCLK
+      Period Value: 10
+      Period Unit: Milliseconds
+      Duty Cycle Value: 50
+      Duty Cycle Unit: Unit Raw Counts
+      Auto Start: False
+      GTIOCA Output Enabled: False
+      GTIOCA Stop Level: Pin Level Low
+      GTIOCB Output Enabled: False
+      GTIOCB Stop Level: Pin Level Low
+      Callback: gpt_MotorT_callback
+      Overflow Interrupt Priority: Priority 0 (highest)
+      
   Thread "CallistoMain"
     Symbol: CallistoMain
     Name: CallistoMain

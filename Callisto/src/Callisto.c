@@ -86,7 +86,14 @@ void initMotors()
     motorBlockD->g_timer_gpt_x = g_timerD;
     genericMotorInit (motorBlockD);
 
-    motorInitT ();
+    motorBlockT->dirPin = IOPORT_PORT_04_PIN_09;
+    motorBlockT->stepPin = IOPORT_PORT_04_PIN_13;
+    motorBlockT->start = g_timerT.p_api->start;
+    motorBlockT->stop = g_timerT.p_api->stop;
+    motorBlockT->dutyCycleSet = g_timerT.p_api->dutyCycleSet;
+    motorBlockT->periodSet = g_timerT.p_api->periodSet;
+    motorBlockT->g_timer_gpt_x = g_timerT;
+    genericMotorInit (motorBlockT);
 
     machineGlobalsBlock->motorsInit = 1;
 }

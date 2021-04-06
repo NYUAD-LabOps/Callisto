@@ -1,6 +1,27 @@
 /* generated HAL source file - do not edit */
 #include "hal_data.h"
 #if (0) != BSP_IRQ_DISABLED
+#if !defined(SSP_SUPPRESS_ISR_g_timerT) && !defined(SSP_SUPPRESS_ISR_GPT9)
+SSP_VECTOR_DEFINE_CHAN(gpt_counter_overflow_isr, GPT, COUNTER_OVERFLOW, 9);
+#endif
+#endif
+static gpt_instance_ctrl_t g_timerT_ctrl;
+static const timer_on_gpt_cfg_t g_timerT_extend =
+{ .gtioca =
+{ .output_enabled = false, .stop_level = GPT_PIN_LEVEL_LOW },
+  .gtiocb =
+  { .output_enabled = false, .stop_level = GPT_PIN_LEVEL_LOW },
+  .shortest_pwm_signal = GPT_SHORTEST_LEVEL_OFF, };
+static const timer_cfg_t g_timerT_cfg =
+{ .mode = TIMER_MODE_PERIODIC, .period = 10, .unit = TIMER_UNIT_PERIOD_MSEC, .duty_cycle = 50, .duty_cycle_unit =
+          TIMER_PWM_UNIT_RAW_COUNTS,
+  .channel = 9, .autostart = false, .p_callback = gpt_MotorT_callback, .p_context = &g_timerT, .p_extend =
+          &g_timerT_extend,
+  .irq_ipl = (0), };
+/* Instance structure to use this module. */
+const timer_instance_t g_timerT =
+{ .p_ctrl = &g_timerT_ctrl, .p_cfg = &g_timerT_cfg, .p_api = &g_timer_on_gpt };
+#if (0) != BSP_IRQ_DISABLED
 #if !defined(SSP_SUPPRESS_ISR_g_timerD) && !defined(SSP_SUPPRESS_ISR_GPT8)
 SSP_VECTOR_DEFINE_CHAN(gpt_counter_overflow_isr, GPT, COUNTER_OVERFLOW, 8);
 #endif

@@ -381,6 +381,16 @@ void processUDP(char *UDPRx)
                         motorBlockD->defaultDir = IOPORT_LEVEL_LOW;
                     }
                 break;
+                case 't':
+                    if (UDPRx[2] == 'h')
+                    {
+                        toolBlockA->motorBlock->defaultDir = IOPORT_LEVEL_HIGH;
+                    }
+                    else
+                    {
+                        toolBlockA->motorBlock->defaultDir = IOPORT_LEVEL_LOW;
+                    }
+                break;
             }
         break;
         case '3':
@@ -804,7 +814,7 @@ void processUDP(char *UDPRx)
 
                     motorBlockZ->targetPosSteps = dataInt;
                 break;
-                case 'a':
+                case 't':
                     memcpy (&data, (UDPRx + 2), 8);
                     dataInt = data;
 
@@ -940,7 +950,7 @@ void processUDP(char *UDPRx)
                 case 'z':
                     memcpy ((machineGlobalsBlock->UDPTxBuff + 2), &motorBlockZ->pos, 8);
                 break;
-                case 'a':
+                case 't':
                     memcpy ((machineGlobalsBlock->UDPTxBuff + 2), &toolBlockA->motorBlock->pos, 8);
                 break;
                 default:

@@ -111,6 +111,11 @@ void gpt_MotorD_callback(timer_callback_args_t *p_args)
 {
     stepHandler (motorBlockD);
 }
+
+void gpt_MotorT_callback(timer_callback_args_t *p_args)
+{
+    stepHandler (motorBlockT);
+}
 void motorInitX()
 {
     ssp_err_t err;

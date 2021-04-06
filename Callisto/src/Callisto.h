@@ -26,6 +26,7 @@
 #define DEFAULTJERKSPEEDY 500
 #define DEFAULTJERKSPEEDZ 500
 #define HOME_BACKOFF 250 ///Time in milliseconds the motor runs when reversing away from limit.
+#define HOME_BACKOFF_DISTANCE 15 ///Distance in millimeters to back off of limit.
 #define HOMEVX 3600
 #define HOMEVY 3600
 #define HOMEVZ 3600
@@ -113,7 +114,7 @@ struct motorController
     ///Retains the offset, in steps, used for relative positioning movements.
     long int offsetSteps;
 
-    ///Used to retain the motor step size, in mm/step.
+    ///Used to retain the motor step size, in steps per mm.
     double stepSize;
     /**Used to retain the integer value which corresponds to the GPIO pin being used for STEP output.
     This integer value is found in the #define values provided by Renesas headers.*/

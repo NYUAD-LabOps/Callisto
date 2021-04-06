@@ -7,11 +7,12 @@
 
 ///The motor handler function makes speed and direction adjustments, and tracks position. Position is
 /// calculated based on number of steps taken and the step size.
-void motorHandler(struct motorController *motorBlock){
-int i;
-int prevTargetDir;
-int targetFreq;
-double prevTargetSpeed, origSpeed;
+void motorHandler(struct motorController *motorBlock)
+{
+    int i;
+    int prevTargetDir;
+    int targetFreq, backOffSteps;
+    double prevTargetSpeed, origSpeed;
 
     ///If the frequency adjustment flag is active, set the motor speed accordingly,
     /// else calculate and set frequency according to target speed and step size.
@@ -63,20 +64,28 @@ double prevTargetSpeed, origSpeed;
 //                    ///The motor is moving slow enough for a direction change.
 //
 //                }
-            } else {
-                if (percentError(motorBlock->targetSpeed, motorBlock->speed) > MAXERROR)
+            }
+            else
+            {
+                if (percentError (motorBlock->targetSpeed, motorBlock->speed) > MAXERROR)
                 {
                     ///The current speed is too far off target.
                     ///Calculate the step size and start the change.
 
 //                    motorBlock->accelStepSize = (motorBlock->targetSpeed - motorBlock->speed) * 1.0;
                     ///Set the direction based on the sign of the speed
-                    if(motorBlock->targetSpeed > 0){
+                    if (motorBlock->targetSpeed > 0)
+                    {
                         motorBlock->targetDir = motorBlock->fwdDir;
-                    } else if(motorBlock->targetSpeed < 0){
-                        if(motorBlock->fwdDir == IOPORT_LEVEL_HIGH){
+                    }
+                    else if (motorBlock->targetSpeed < 0)
+                    {
+                        if (motorBlock->fwdDir == IOPORT_LEVEL_HIGH)
+                        {
                             motorBlock->targetDir = IOPORT_LEVEL_LOW;
-                        } else{
+                        }
+                        else
+                        {
                             motorBlock->targetDir = IOPORT_LEVEL_HIGH;
                         }
                     }
@@ -110,10 +119,13 @@ double prevTargetSpeed, origSpeed;
         while (motorBlock->limit0State == IOPORT_LEVEL_LOW)
             tx_thread_sleep (1);
 
-        ///The axis has now moved off of the limit. Zero the position and let it
-        /// continue for a short interval. This interval is defined in "Helix.h" as
-        /// HOME_BACKOFF.
-        R_BSP_SoftwareDelay (HOME_BACKOFF, BSP_DELAY_UNITS_MILLISECONDS);
+        motorBlock->posSteps = 0;
+        motorBlock->pos = 0;
+
+        while (fabs (motorBlock->pos) < HOME_BACKOFF_DISTANCE)
+        {
+            tx_thread_sleep (1);
+        }
 
         ///Stop the motor, reset position counter and homing flag.
         stopMotor (motorBlock);
@@ -124,8 +136,8 @@ double prevTargetSpeed, origSpeed;
 
 }
 
-
-void setSpeed(struct motorController *motorBlock, int freqSet, double targetSpeed, int targetFreq){
+void setSpeed(struct motorController *motorBlock, int freqSet, double targetSpeed, int targetFreq)
+{
     ssp_err_t err;
     int tmpTargetFreq;
     double tmp, tmpTargetSpeed;
@@ -136,9 +148,11 @@ void setSpeed(struct motorController *motorBlock, int freqSet, double targetSpee
         tmp = targetSpeed;
         tmp /= 60; //Convert to mm/s from mm/min
         tmp *= motorBlock->stepSize; //steps/s
-        tmpTargetFreq = (int) fabs(tmp);
+        tmpTargetFreq = (int) fabs (tmp);
         tmpTargetSpeed = targetSpeed;
-    } else{
+    }
+    else
+    {
         tmpTargetFreq = targetFreq;
         ///To calculate the speed based on the frequency. We multiply by the step size
         /// in order to obtain the speed in mm/s.
@@ -147,9 +161,10 @@ void setSpeed(struct motorController *motorBlock, int freqSet, double targetSpee
     }
 
     ///Check if the motor GPT is already running. If not, it must be started.
-    if(motorBlock->frequency == 0 && tmpTargetFreq > 0){
+    if (motorBlock->frequency == 0 && tmpTargetFreq > 0)
+    {
         ///Start motor GPT
-        motorBlock->start(motorBlock->g_timer_gpt_x.p_ctrl);
+        motorBlock->start (motorBlock->g_timer_gpt_x.p_ctrl);
     }
 
     err = motorBlock->periodSet (motorBlock->g_timer_gpt_x.p_ctrl, (2 * tmpTargetFreq), TIMER_UNIT_FREQUENCY_HZ);
@@ -160,7 +175,8 @@ void setSpeed(struct motorController *motorBlock, int freqSet, double targetSpee
     //    err = motorBlock->dutyCycleSet (motorBlock->g_timer_gpt_x.p_ctrl, 50, TIMER_PWM_UNIT_PERCENT, 0);
 }
 
-void setDir(struct motorController *motorBlock, ioport_level_t targetDir){
+void setDir(struct motorController *motorBlock, ioport_level_t targetDir)
+{
     ssp_err_t err;
     int targetFreq;
     double tmp;
@@ -184,23 +200,26 @@ void stopMotor(struct motorController *motorBlock)
 }
 
 /**Handles behavior when limit switch is activated*/
-void limitHit(struct motorController *motorBlock){
+void limitHit(struct motorController *motorBlock)
+{
     ioport_level_t level;
     ssp_err_t err;
-    R_BSP_SoftwareDelay(DEBOUNCE_TIME,BSP_DELAY_UNITS_MILLISECONDS);
+    R_BSP_SoftwareDelay (DEBOUNCE_TIME, BSP_DELAY_UNITS_MILLISECONDS);
 
-    err = g_ioport.p_api->pinRead(motorBlock->limit0Pin, &level);
+    err = g_ioport.p_api->pinRead (motorBlock->limit0Pin, &level);
     motorBlock->limit0State = level;
 
     ///If the limit has been activated, and the motor is not in a homing routine,
     /// stop the motor.
-    if(level == IOPORT_LEVEL_LOW && motorBlock->homing == 0){
-        stopMotor(motorBlock);
+    if (level == IOPORT_LEVEL_LOW && motorBlock->homing == 0)
+    {
+        stopMotor (motorBlock);
     }
 }
 
 ///Handles counting steps, stopping the motor when target position is reached, and toggling the STEP pin.
-void stepHandler(struct motorController *motorBlock){
+void stepHandler(struct motorController *motorBlock)
+{
     ioport_level_t level;
     ssp_err_t err;
     if (motorBlock->stepState == IOPORT_LEVEL_HIGH)
