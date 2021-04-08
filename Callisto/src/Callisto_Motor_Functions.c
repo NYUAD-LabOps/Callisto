@@ -146,16 +146,16 @@ void setSpeed(struct motorController *motorBlock, int freqSet, double targetSpee
     {
         ///Calculate timer frequency.
         tmp = targetSpeed;
-        tmp /= 60; //Convert to mm/s from mm/min
-        tmp *= motorBlock->stepSize; //steps/s
+        tmp /= 60; //Convert to mm/min to mm/s
+        tmp *= motorBlock->stepSize; //(mm/s) * (steps/mm) = steps/s = frequency
         tmpTargetFreq = (int) fabs (tmp);
         tmpTargetSpeed = targetSpeed;
     }
     else
     {
         tmpTargetFreq = targetFreq;
-        ///To calculate the speed based on the frequency. We multiply by the step size
-        /// in order to obtain the speed in mm/s.
+        ///To calculate the speed based on the frequency. We divide by the step size
+        /// in order to obtain the speed in mm/s. Here our step size is steps/mm, not mm/step.
         tmpTargetSpeed = targetFreq;
         tmpTargetSpeed /= motorBlock->stepSize;
     }
