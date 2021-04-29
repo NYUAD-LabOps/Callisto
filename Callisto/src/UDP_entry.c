@@ -790,6 +790,12 @@ void processUDP(char *UDPRx)
 
             toolBlockA->motorBlock->freqSet = UDPRx[2];
         break;
+        case 'p':
+            ///Set target position. The Secondary receives a target (X,Y,Z,T) and a speed.
+            ///Next, the Secondary must calculate the target velocity vector based on the target speed
+            /// and position. Then, set the motors to the new speed, which is the components of the vector, except
+            /// for the extruder, which is calculated separately based on the movement time.
+
         case 'q':
             ///Set axis target position steps.
             switch (UDPRx[1])
