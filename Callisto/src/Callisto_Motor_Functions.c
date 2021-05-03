@@ -67,7 +67,11 @@ void motorHandler(struct motorController *motorBlock)
             }
             else
             {
-                if (percentError (motorBlock->targetSpeed, motorBlock->speed) > MAXERROR)
+                if (motorBlock->targetSpeed == 0 && motorBlock->speed != 0)
+                {
+                    stopMotor (motorBlock);
+                }
+                else if (percentError (motorBlock->targetSpeed, motorBlock->speed) > MAXERROR)
                 {
                     ///The current speed is too far off target.
                     ///Calculate the step size and start the change.
@@ -147,7 +151,7 @@ void setSpeed(struct motorController *motorBlock, int freqSet, double targetSpee
         ///Calculate timer frequency.
         tmp = targetSpeed;
         tmp /= 60; //Convert to mm/min to mm/s
-        tmp *= motorBlock->stepSize; //(mm/s) * (steps/mm) = steps/s = frequency
+        tmp *= motorBlock->stepsPerMM; //(mm/s) * (steps/mm) = steps/s = frequency
         tmpTargetFreq = (int) fabs (tmp);
         tmpTargetSpeed = targetSpeed;
     }
@@ -157,7 +161,7 @@ void setSpeed(struct motorController *motorBlock, int freqSet, double targetSpee
         ///To calculate the speed based on the frequency. We divide by the step size
         /// in order to obtain the speed in mm/s. Here our step size is steps/mm, not mm/step.
         tmpTargetSpeed = targetFreq;
-        tmpTargetSpeed /= motorBlock->stepSize;
+        tmpTargetSpeed /= motorBlock->stepsPerMM;
     }
 
     ///Check if the motor GPT is already running. If not, it must be started.
@@ -232,16 +236,35 @@ void stepHandler(struct motorController *motorBlock)
         err = g_ioport.p_api->pinWrite (motorBlock->stepPin, IOPORT_LEVEL_HIGH);
         motorBlock->stepState = IOPORT_LEVEL_HIGH;
 
-        ///Calculate the current position in steps and mm
-        if (motorBlock->dir == motorBlock->fwdDir)
+        if (motorBlock != motorBlockX)
         {
-            motorBlock->posSteps++;
-        }
-        else
-        {
-            motorBlock->posSteps--;
+            ///Increment or decrement the motor position by the stepSize
+            if (motorBlock->dir == motorBlock->fwdDir)
+            {
+                motorBlock->posSteps++;
+                motorBlock->pos += motorBlock->stepSize;
+            }
+            else
+            {
+                motorBlock->posSteps--;
+                motorBlock->pos -= motorBlock->stepSize;
+            }
         }
 
-        motorBlock->pos = motorBlock->posSteps / motorBlock->stepSize;
+    }
+}
+
+void encoderHandler(struct motorController *motorBlock)
+{
+    if (motorBlock->dir == motorBlock->fwdDir)
+    {
+        motorBlock->pos += motorBlock->encoderMMPerPulse;
+        motorBlock->posSteps += motorBlock->stepsPerEncoderPulse;
+
+    }
+    else
+    {
+        motorBlock->pos -= motorBlock->encoderMMPerPulse;
+        motorBlock->posSteps -= motorBlock->stepsPerEncoderPulse;
     }
 }

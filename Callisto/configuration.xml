@@ -509,6 +509,26 @@
       <property id="module.driver.timer.p_callback" value="gpt_MotorT_callback"/>
       <property id="module.driver.timer.irq_ipl" value="board.icu.common.irq.priority0"/>
     </module>
+    <module id="module.driver.external_irq_on_icu.691094487">
+      <property id="module.driver.external_irq.name" value="g_external_irqXA"/>
+      <property id="module.driver.external_irq.channel" value="12"/>
+      <property id="module.driver.external_irq.trigger" value="module.driver.external_irq.trigger.trig_both_edge"/>
+      <property id="module.driver.external_irq.filter_enable" value="module.driver.external_irq.filter_enable.true"/>
+      <property id="module.driver.external_irq.pclk_div" value="module.driver.external_irq.pclk_div.pclk_div_by_64"/>
+      <property id="module.driver.external_irq.interrupt_enable" value="module.driver.external_irq.interrupt_enable.true"/>
+      <property id="module.driver.external_irq.p_callback" value="g_external_irqXA_callback"/>
+      <property id="module.driver.external_irq.irq_ipl" value="board.icu.common.irq.priority0"/>
+    </module>
+    <module id="module.driver.external_irq_on_icu.1257428907">
+      <property id="module.driver.external_irq.name" value="g_external_irqXB"/>
+      <property id="module.driver.external_irq.channel" value="13"/>
+      <property id="module.driver.external_irq.trigger" value="module.driver.external_irq.trigger.trig_both_edge"/>
+      <property id="module.driver.external_irq.filter_enable" value="module.driver.external_irq.filter_enable.true"/>
+      <property id="module.driver.external_irq.pclk_div" value="module.driver.external_irq.pclk_div.pclk_div_by_64"/>
+      <property id="module.driver.external_irq.interrupt_enable" value="module.driver.external_irq.interrupt_enable.true"/>
+      <property id="module.driver.external_irq.p_callback" value="g_external_irqXB_callback"/>
+      <property id="module.driver.external_irq.irq_ipl" value="board.icu.common.irq.priority0"/>
+    </module>
     <context id="_hal.0">
       <stack module="module.driver.fmi_on_fmi.0"/>
       <stack module="module.driver.cgc_on_cgc.0"/>
@@ -529,6 +549,8 @@
       <stack module="module.driver.timer_on_gpt.1539698956"/>
       <stack module="module.driver.timer_on_gpt.906442704"/>
       <stack module="module.driver.timer_on_gpt.1645537314"/>
+      <stack module="module.driver.external_irq_on_icu.691094487"/>
+      <stack module="module.driver.external_irq_on_icu.1257428907"/>
     </context>
     <context id="rtos.threadx.thread.1797549027">
       <property id="_symbol" value="CallistoMain"/>

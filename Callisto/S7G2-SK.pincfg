@@ -481,7 +481,7 @@
   <v1:configSetting configurationId="p010" altId="p010.input"/>
   <v1:configSetting configurationId="p005.gpio_mode" altId="p005.gpio_mode.gpio_mode_in"/>
   <v1:configSetting configurationId="p413.gpio_drivecapacity" altId="p413.gpio_speed.gpio_speed_low"/>
-  <v1:configSetting configurationId="p000" altId="p000.input"></v1:configSetting>
+  <v1:configSetting configurationId="p000" altId="p000.input"/>
   <v1:configSetting configurationId="p006" altId="p006.input"/>
   <v1:configSetting configurationId="p005" altId="p005.input"/>
   <v1:configSetting configurationId="p004" altId="p004.input"/>
@@ -603,4 +603,20 @@
   <v1:configSetting configurationId="p306" altId="p306.output.low"/>
   <v1:configSetting configurationId="p305" altId="p305.output.low"/>
   <v1:configSetting configurationId="p000.gpio_irq" altId="p000.gpio_irq.gpio_irq_enabled"/>
+  <v1:configSetting configurationId="p008.gpio_mode" altId="p008.gpio_mode.gpio_mode_irq"/>
+  <v1:configSetting configurationId="p009.gpio_mode" altId="p009.gpio_mode.gpio_mode_irq"/>
+  <v1:configSetting configurationId="p008.gpio_irq" altId="p008.gpio_irq.gpio_irq_enabled"/>
+  <v1:configSetting configurationId="irq0.irq13" altId="irq0.irq13.p009">
+    <v1:connectionSetting altId="p009.irq0.irq13"/>
+  </v1:configSetting>
+  <v1:configSetting configurationId="irq0.irq12" altId="irq0.irq12.p008">
+    <v1:connectionSetting altId="p008.irq0.irq12"/>
+  </v1:configSetting>
+  <v1:configSetting configurationId="p009.gpio_irq" altId="p009.gpio_irq.gpio_irq_enabled"/>
+  <v1:configSetting configurationId="p009" altId="p009.irq0.irq13">
+    <v1:connectionSetting altId="irq0.irq13.p009"/>
+  </v1:configSetting>
+  <v1:configSetting configurationId="p008" altId="p008.irq0.irq12">
+    <v1:connectionSetting altId="irq0.irq12.p008"/>
+  </v1:configSetting>
 </v1:pinSettings>

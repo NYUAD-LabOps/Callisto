@@ -8,6 +8,7 @@ void MotorD_entry(void)
     while (1)
     {
         motorHandler (motorBlockD);
-        tx_thread_sleep (1);
+        //        tx_thread_sleep (1);
+                tx_thread_suspend (tx_thread_identify ());
     }
 }

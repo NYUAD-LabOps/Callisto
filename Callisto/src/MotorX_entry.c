@@ -10,6 +10,6 @@ void MotorX_entry(void)
         //run motor handler for motor 2
         motorHandler(motorBlockX);
         //allow next waiting thread(s) to run
-        tx_thread_sleep (1);
+        tx_thread_relinquish ();
     }
 }

@@ -180,42 +180,57 @@ void processUDP(char *UDPRx)
                 case 'x':
                     memcpy (&data, (UDPRx + 2), 8);
 
-                    motorBlockX->stepSize = data;
+                    motorBlockX->stepsPerMM = data;
+                    motorBlockX->stepSize = (1.0 / data);
+
+                    motorBlockX->encoderMMPerPulse = ((STEPSPERREVOLUTION / motorBlockX->stepsPerMM) / (ENCODERPULSESPERREVOLUTION));
+                    motorBlockX->stepsPerEncoderPulse = (motorBlockX->stepsPerMM * motorBlockX->encoderMMPerPulse);
                 break;
                 case 'y':
                     memcpy (&data, (UDPRx + 2), 8);
 
-                    motorBlockY->stepSize = data;
+                    motorBlockY->stepsPerMM = data;
+                    motorBlockY->stepSize = (1.0 / data);
+                    motorBlockY->encoderMMPerPulse = ((STEPSPERREVOLUTION / data) / (ENCODERPULSESPERREVOLUTION));
+                    motorBlockX->stepsPerEncoderPulse = (motorBlockY->stepsPerMM * motorBlockY->encoderMMPerPulse);
                 break;
                 case 'a':
                     memcpy (&data, (UDPRx + 2), 8);
 
-                    motorBlockA->stepSize = data;
+                    motorBlockA->stepsPerMM = data;
+                    motorBlockA->stepSize = (1.0 / data);
+                    motorBlockA->encoderMMPerPulse = ((STEPSPERREVOLUTION / data) / (ENCODERPULSESPERREVOLUTION));
+                    motorBlockX->stepsPerEncoderPulse = (motorBlockA->stepsPerMM * motorBlockA->encoderMMPerPulse);
                 break;
                 case 'z':
                     memcpy (&data, (UDPRx + 2), 8);
 
-                    motorBlockZ->stepSize = data;
+                    motorBlockZ->stepsPerMM = data;
+                    motorBlockZ->stepSize = (1.0 / data);
                 break;
                 case 'b':
                     memcpy (&data, (UDPRx + 2), 8);
 
-                    motorBlockB->stepSize = data;
+                    motorBlockB->stepsPerMM = data;
+                    motorBlockB->stepSize = (1.0 / data);
                 break;
                 case 'c':
                     memcpy (&data, (UDPRx + 2), 8);
 
-                    motorBlockC->stepSize = data;
+                    motorBlockC->stepsPerMM = data;
+                    motorBlockC->stepSize = (1.0 / data);
                 break;
                 case 'd':
                     memcpy (&data, (UDPRx + 2), 8);
 
-                    motorBlockD->stepSize = data;
+                    motorBlockD->stepsPerMM = data;
+                    motorBlockD->stepSize = (1.0 / data);
                 break;
                 case 't':
                     memcpy (&data, (UDPRx + 2), 8);
 
-                    toolBlockA->motorBlock->stepSize = data;
+                    toolBlockA->motorBlock->stepsPerMM = data;
+                    toolBlockA->motorBlock->stepSize = (1.0 / data);
                 break;
                 default:
                 break;
@@ -477,6 +492,58 @@ void processUDP(char *UDPRx)
                 default:
                 break;
             }
+        break;
+        case 'b':
+            ///A new set of target positions and speed.
+
+            memcpy (&data, (UDPRx + 2), 8);
+            if (data != ~0)
+            {
+                machineGlobalsBlock->targetPosX = data;
+            }
+            else
+            {
+                machineGlobalsBlock->targetPosX = motorBlockX->pos;
+            }
+
+            memcpy (&data, (UDPRx + 10), 8);
+            if (data != ~0)
+            {
+                machineGlobalsBlock->targetPosY = data;
+            }
+            else
+            {
+                machineGlobalsBlock->targetPosY = motorBlockY->pos;
+            }
+
+            memcpy (&data, (UDPRx + 18), 8);
+            if (data != ~0)
+            {
+                machineGlobalsBlock->targetPosZ = data;
+            }
+            else
+            {
+                machineGlobalsBlock->targetPosZ = motorBlockZ->pos;
+            }
+
+            memcpy (&data, (UDPRx + 26), 8);
+            if (data != ~0)
+            {
+                machineGlobalsBlock->targetPosT = data;
+            }
+            else
+            {
+                machineGlobalsBlock->targetPosT = motorBlockT->pos;
+            }
+
+            memcpy (&data, (UDPRx + 34), 8);
+            if (data != ~0)
+            {
+                machineGlobalsBlock->targetSpeed = data;
+            }
+
+
+            machineGlobalsBlock->newTarget = 1;
         break;
         case 'c':
             ///Calibrate axis.

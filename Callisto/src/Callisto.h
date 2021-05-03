@@ -7,7 +7,7 @@
 #define PRIMARY_PORT 5000
 #define IPADDSTRING "192.168.10.182"
 #define NXD_MQTT_MAX_MESSAGE_LENGTH 50
-#define UDPMSGLENGTH 10
+#define UDPMSGLENGTH 50
 #define MAXERROR 1.0 /// %
 #define MINPRECISION 1.0 /// %
 #define ACCEL 1
@@ -32,6 +32,8 @@
 #define HOMEVZ 3600
 #define MINV 100
 #define DEBOUNCE_TIME 75 //time in milliseconds for debouncing delay
+#define ENCODERPULSESPERREVOLUTION 4000
+#define STEPSPERREVOLUTION 1600
 
 //long double pi=acos(-1.0L)
 
@@ -46,7 +48,7 @@ instead, all constant and variable motor information is stored in the motorContr
 this organizes all motor information in a single block of protected RAM, which is globally accessible
 there is a separate motorController block for each motor
 
-The PWM frequency of a motor is calculated as freq = 2 * (targetSpeed / (60 * stepSize)).
+The PWM frequency of a motor is calculated as freq = 2 * (targetSpeed / (60 * stepsPerMM)).
 Dividing the target speed by the step size gets the frequency in pulses/min. Dividing by 60 brings
 it to pulses/second. Doubling the frequency is then required because each pulse of the PWM signal
 is used to trigger an interrupt which inverts the level of the STEP pin. This halves the actual signal
@@ -86,15 +88,15 @@ struct motorController
     int dirPin;
     ioport_level_t targetDir;
 
-    long int origPosStepsAbs;
+    double origPosStepsAbs;
 
     ///Used to retain the original position, in motor steps, prior to setting target position.
-    long int origPosSteps;
+    double origPosSteps;
 
-    long int posStepsAbs;
+    double posStepsAbs;
 
     ///Used to retain the position, in motor steps.
-    long int posSteps;
+    double posSteps;
 
     double origPosAbs;
 
@@ -107,15 +109,18 @@ struct motorController
     double targetPosAbs;
     ///Used to retain the target position, in mm.
     double targetPos;
-    long int targetPosStepsAbs;
+    double targetPosStepsAbs;
     ///Used to retain the target position, in motor steps.
-    long int targetPosSteps;
+    double targetPosSteps;
 
     ///Retains the offset, in steps, used for relative positioning movements.
     long int offsetSteps;
 
     ///Used to retain the motor step size, in steps per mm.
+    double stepsPerMM;
     double stepSize;
+    double encoderMMPerPulse;
+    double stepsPerEncoderPulse;
     /**Used to retain the integer value which corresponds to the GPIO pin being used for STEP output.
     This integer value is found in the #define values provided by Renesas headers.*/
     int stepPin;
@@ -224,7 +229,12 @@ struct machineGlobals
     ///This variable retains the target velocity for the toolhead.
     /// By default this is initialized to the default velocity defined
     /// in "Helix.h".
+    double targetPosX;
+    double targetPosY;
+    double targetPosZ;
+    double targetPosT;
     double targetSpeed;
+    char newTarget;
 } *machineGlobalsBlock;
 
 /**This struct retains information relevant to instructions after they are parsed.
@@ -268,3 +278,4 @@ void processUDP(char *UDPRx);
 void toolHandler(struct toolBlock *toolBlock);
 void initToolBlocks();
 void reportIP();
+void encoderHandler(struct motorController *motorBlock);

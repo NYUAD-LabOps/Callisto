@@ -38,6 +38,6 @@ void ToolA_entry(void)
     while (1)
     {
         motorHandler (toolBlockA->motorBlock);
-        tx_thread_sleep (1);
+        tx_thread_relinquish ();
     }
 }

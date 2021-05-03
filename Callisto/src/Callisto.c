@@ -34,6 +34,8 @@ void initMotors()
     motorBlockY->g_timer_gpt_x = g_timer_gpt_7;
     err = g_external_irqY.p_api->open (g_external_irqY.p_ctrl, g_external_irqY.p_cfg);
     genericMotorInit (motorBlockY);
+    err = g_external_irqXA.p_api->open (g_external_irqXA.p_ctrl, g_external_irqXA.p_cfg);
+    err = g_external_irqXB.p_api->open (g_external_irqXB.p_ctrl, g_external_irqXB.p_cfg);
 
     motorBlockA->dirPin = IOPORT_PORT_08_PIN_04;
     motorBlockA->stepPin = IOPORT_PORT_08_PIN_03;
@@ -175,6 +177,7 @@ void initGlobalsBlock()
     machineGlobalsBlock->receivingMsg = 0;
     machineGlobalsBlock->calibRunning = 0;
     machineGlobalsBlock->targetSpeed = DEFAULTSPEED;
+    machineGlobalsBlock->newTarget = 0;
     ///Default to relative positioning.
     machineGlobalsBlock->relativePositioningEN = 0;
     machineGlobalsBlock->motorsInit = 0;
@@ -206,7 +209,7 @@ void initGlobalsBlock()
 /// calibration routine.
 void calRoutine(struct motorController *motorBlock)
 {
-    long int tmpTargetPosSteps;
+    double tmpTargetPosSteps;
     tmpTargetPosSteps = motorBlock->posSteps;
 
     ///Reset the motor position to zero

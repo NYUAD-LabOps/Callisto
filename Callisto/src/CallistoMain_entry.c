@@ -5,6 +5,18 @@
 /* Helix Main entry function */
 void CallistoMain_entry(void)
 {
+    double lastX, lastY, lastZ, lastT, lastSpeed;
+    int endReached = 0;
+    int endX, endY, endZ;
+    double lineVector[3], newLineVector[3];
+    double lineVectorMag, newLineVectorMag;
+    double newUnitVector[3];
+    double targetVelocityVector[3], targetVelocityVectorMag;
+    double startPos[3], newPos[3], targetPos[3];
+    //    double targetSpeed;
+    double tmpData;
+    double extruderSpeed;
+    double time;
     if (DEBUGGER)
         initialise_monitor_handles ();
     /* TODO: add your own code here */
@@ -26,11 +38,101 @@ void CallistoMain_entry(void)
 
     while (1)
     {
-        if (DEBUG)
+
+        if (machineGlobalsBlock->newTarget)
         {
-            printf ("\nWaiting...");
+            machineGlobalsBlock->newTarget = 0;
+            targetPos[0] = machineGlobalsBlock->targetPosX;
+            targetPos[1] = machineGlobalsBlock->targetPosY;
+            targetPos[2] = machineGlobalsBlock->targetPosZ;
+
+            ///We now have the target position and can calculate the line vector.
+            lineVector[0] = (targetPos[0] - motorBlockX->pos);
+            lineVector[1] = (targetPos[1] - motorBlockY->pos);
+            lineVector[2] = (targetPos[2] - motorBlockZ->pos);
+
+            ///Calculate magnitude.
+            lineVectorMag = sqrt (pow (lineVector[0], 2) + pow (lineVector[1], 2) + pow (lineVector[2], 2));
+
+            ///Calculate the latest unit vector.
+            newUnitVector[0] = (lineVector[0] / lineVectorMag);
+            newUnitVector[1] = (lineVector[1] / lineVectorMag);
+            newUnitVector[2] = (lineVector[2] / lineVectorMag);
+
+            ///The unit vector will provide the appropriate direction of each motor. Multiplying
+            /// the unit vector by the target speed will provide the target velocity vector.
+            ///Calculate the velocity vector.
+            targetVelocityVector[0] = (machineGlobalsBlock->targetSpeed * newUnitVector[0]);
+            targetVelocityVector[1] = (machineGlobalsBlock->targetSpeed * newUnitVector[1]);
+            targetVelocityVector[2] = (machineGlobalsBlock->targetSpeed * newUnitVector[2]);
+
+            if (targetVelocityVector[2] > 110.0)
+            {
+                ///The z-axis movement speed is too high. Calculate the reduction factor and recalculate
+                /// the velocity vector based on this.
+                double reductionFactor = (110.0 / targetVelocityVector[2]);
+                machineGlobalsBlock->targetSpeed *= reductionFactor;
+                targetVelocityVector[0] *= reductionFactor;
+                targetVelocityVector[1] *= reductionFactor;
+                targetVelocityVector[2] *= reductionFactor;
+            }
+
+            motorBlockX->freqSet = 0;
+            motorBlockY->freqSet = 0;
+            motorBlockZ->freqSet = 0;
+            motorBlockT->freqSet = 0;
+
+            ///Get the movement time in minutes.
+            time = lineVectorMag / machineGlobalsBlock->targetSpeed;
+
+            ///Perform extruder calculations.
+            extruderSpeed = ((machineGlobalsBlock->targetPosT - motorBlockT->pos) / time);
+
+            ///Set motor velocities and wait until target is reached.
+            motorBlockX->targetSpeed = targetVelocityVector[0] / 2;
+            motorBlockY->targetSpeed = targetVelocityVector[1] / 2;
+            motorBlockZ->targetSpeed = targetVelocityVector[2] / 2;
+            motorBlockT->targetSpeed = extruderSpeed;
+
+            tx_thread_sleep(1);
+
+            motorBlockX->targetSpeed = targetVelocityVector[0];
+            motorBlockY->targetSpeed = targetVelocityVector[1];
+            motorBlockZ->targetSpeed = targetVelocityVector[2];
+
+            ///Here the controller will need continuously check the current position against the target and re-calculate the motor speeds.
+            /// This will allow the controller to respond to missed steps by adjusting the speed of the motors up or down to ensure the target position
+            /// is reached by all axes at the same time, and the tolerance level is adhered to.
+
+            while (lineVectorMag > .1)
+            {
+                lineVector[0] = (targetPos[0] - motorBlockX->pos);
+                lineVector[1] = (targetPos[1] - motorBlockY->pos);
+                lineVector[2] = (targetPos[2] - motorBlockZ->pos);
+
+                ///Calculate magnitude.
+                lineVectorMag = sqrt (pow (lineVector[0], 2) + pow (lineVector[1], 2) + pow (lineVector[2], 2));
+                tx_thread_relinquish ();
+            }
+
+            stopMotor (motorBlockX);
+            stopMotor (motorBlockY);
+            stopMotor (motorBlockZ);
+            stopMotor (motorBlockT);
+
+//            machineGlobalsBlock->UDPTxBuff[0] = 'R';
+//            machineGlobalsBlock->UDPTxBuff[1] = 'D';
+//            machineGlobalsBlock->UDPTxBuff[2] = 'Y';
+//            UDPSend ();
+
         }
-        tx_thread_sleep (3000);
+
+//        if (DEBUG)
+//        {
+//            printf ("\nWaiting...");
+//        }
+//        tx_thread_sleep (3000);
+        tx_thread_relinquish ();
     }
 }
 
@@ -63,6 +165,16 @@ void ext_irqZ_callback(external_irq_callback_args_t *p_args)
     limitHit (motorBlockC);
     limitHit (motorBlockD);
 
+}
+
+void g_external_irqXA_callback(external_irq_callback_args_t *p_args)
+{
+    encoderHandler(motorBlockX);
+}
+
+void g_external_irqXB_callback(external_irq_callback_args_t *p_args)
+{
+    encoderHandler(motorBlockX);
 }
 
 void gpt_4_callback(timer_callback_args_t *p_args)
@@ -127,7 +239,7 @@ void motorInitX()
     motorBlockX->dutyCycleSet = g_timer_gpt_4.p_api->dutyCycleSet;
     motorBlockX->periodSet = g_timer_gpt_4.p_api->periodSet;
     motorBlockX->g_timer_gpt_x = g_timer_gpt_4;
-    motorBlockX->stepSize = STEPX;
+    motorBlockX->stepsPerMM = STEPX;
     motorBlockX->stepPin = IOPORT_PORT_11_PIN_00;
     motorBlockX->stepState = IOPORT_LEVEL_LOW;
     motorBlockX->limit0Pin = IOPORT_PORT_02_PIN_02;
@@ -166,7 +278,7 @@ void motorInitY()
     motorBlockY->dutyCycleSet = g_timer_gpt_7.p_api->dutyCycleSet;
     motorBlockY->periodSet = g_timer_gpt_7.p_api->periodSet;
     motorBlockY->g_timer_gpt_x = g_timer_gpt_7;
-    motorBlockY->stepSize = STEPY;
+    motorBlockY->stepsPerMM = STEPY;
     motorBlockY->stepPin = IOPORT_PORT_04_PIN_15;
     motorBlockY->stepState = IOPORT_LEVEL_LOW;
     motorBlockY->limit0Pin = IOPORT_PORT_04_PIN_08;
@@ -205,7 +317,7 @@ void motorInitZ()
     motorBlockZ->dutyCycleSet = g_timer_gpt_3.p_api->dutyCycleSet;
     motorBlockZ->periodSet = g_timer_gpt_3.p_api->periodSet;
     motorBlockZ->g_timer_gpt_x = g_timer_gpt_3;
-    motorBlockZ->stepSize = STEPZ;
+    motorBlockZ->stepsPerMM = STEPZ;
     motorBlockZ->stepPin = IOPORT_PORT_04_PIN_14;
     motorBlockZ->stepState = IOPORT_LEVEL_LOW;
     motorBlockZ->limit0Pin = IOPORT_PORT_02_PIN_03;
@@ -245,7 +357,7 @@ void motorInitT()
     motorBlockT->dutyCycleSet = g_timer0.p_api->dutyCycleSet;
     motorBlockT->periodSet = g_timer0.p_api->periodSet;
     motorBlockT->g_timer_gpt_x = g_timer0;
-    motorBlockT->stepSize = STEPX;
+    motorBlockT->stepsPerMM = STEPX;
     motorBlockT->stepPin = IOPORT_PORT_04_PIN_13;
     motorBlockT->stepState = IOPORT_LEVEL_LOW;
     motorBlockT->limit0Pin = IOPORT_PORT_02_PIN_02;
@@ -282,7 +394,8 @@ void genericMotorInit(struct motorController *motorBlock)
 {
     ssp_err_t err;
     motorBlock->homing = 0;
-    motorBlock->stepSize = STEPZ;
+    motorBlock->stepsPerMM = STEPZ;
+    motorBlock->stepSize = (1.0 / STEPZ);
     motorBlock->stepState = IOPORT_LEVEL_LOW;
     motorBlock->defaultDir = IOPORT_LEVEL_LOW;
     motorBlock->targetDir = motorBlock->defaultDir;

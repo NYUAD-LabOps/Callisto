@@ -8,6 +8,6 @@ void MotorY_entry(void)
     while (1)
     {
         motorHandler (motorBlockY);
-        tx_thread_sleep (1);
+        tx_thread_relinquish ();
     }
 }
