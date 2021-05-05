@@ -1,6 +1,82 @@
 /* generated HAL source file - do not edit */
 #include "hal_data.h"
 #if (0) != BSP_IRQ_DISABLED
+#if !defined(SSP_SUPPRESS_ISR_g_external_irqAB) && !defined(SSP_SUPPRESS_ISR_ICU15)
+SSP_VECTOR_DEFINE(icu_irq_isr, ICU, IRQ15);
+#endif
+#endif
+static icu_instance_ctrl_t g_external_irqAB_ctrl;
+static const external_irq_cfg_t g_external_irqAB_cfg =
+{ .channel = 15,
+  .trigger = EXTERNAL_IRQ_TRIG_BOTH_EDGE,
+  .filter_enable = true,
+  .pclk_div = EXTERNAL_IRQ_PCLK_DIV_BY_64,
+  .autostart = true,
+  .p_callback = g_external_irqAB_callback,
+  .p_context = &g_external_irqAB,
+  .p_extend = NULL,
+  .irq_ipl = (0), };
+/* Instance structure to use this module. */
+const external_irq_instance_t g_external_irqAB =
+{ .p_ctrl = &g_external_irqAB_ctrl, .p_cfg = &g_external_irqAB_cfg, .p_api = &g_external_irq_on_icu };
+#if (0) != BSP_IRQ_DISABLED
+#if !defined(SSP_SUPPRESS_ISR_g_external_irqAA) && !defined(SSP_SUPPRESS_ISR_ICU10)
+SSP_VECTOR_DEFINE(icu_irq_isr, ICU, IRQ10);
+#endif
+#endif
+static icu_instance_ctrl_t g_external_irqAA_ctrl;
+static const external_irq_cfg_t g_external_irqAA_cfg =
+{ .channel = 10,
+  .trigger = EXTERNAL_IRQ_TRIG_BOTH_EDGE,
+  .filter_enable = true,
+  .pclk_div = EXTERNAL_IRQ_PCLK_DIV_BY_64,
+  .autostart = true,
+  .p_callback = g_external_irqAA_callback,
+  .p_context = &g_external_irqAA,
+  .p_extend = NULL,
+  .irq_ipl = (0), };
+/* Instance structure to use this module. */
+const external_irq_instance_t g_external_irqAA =
+{ .p_ctrl = &g_external_irqAA_ctrl, .p_cfg = &g_external_irqAA_cfg, .p_api = &g_external_irq_on_icu };
+#if (0) != BSP_IRQ_DISABLED
+#if !defined(SSP_SUPPRESS_ISR_g_external_irqYB) && !defined(SSP_SUPPRESS_ISR_ICU9)
+SSP_VECTOR_DEFINE(icu_irq_isr, ICU, IRQ9);
+#endif
+#endif
+static icu_instance_ctrl_t g_external_irqYB_ctrl;
+static const external_irq_cfg_t g_external_irqYB_cfg =
+{ .channel = 9,
+  .trigger = EXTERNAL_IRQ_TRIG_BOTH_EDGE,
+  .filter_enable = true,
+  .pclk_div = EXTERNAL_IRQ_PCLK_DIV_BY_64,
+  .autostart = true,
+  .p_callback = g_external_irqYB_callback,
+  .p_context = &g_external_irqYB,
+  .p_extend = NULL,
+  .irq_ipl = (0), };
+/* Instance structure to use this module. */
+const external_irq_instance_t g_external_irqYB =
+{ .p_ctrl = &g_external_irqYB_ctrl, .p_cfg = &g_external_irqYB_cfg, .p_api = &g_external_irq_on_icu };
+#if (0) != BSP_IRQ_DISABLED
+#if !defined(SSP_SUPPRESS_ISR_g_external_irqYA) && !defined(SSP_SUPPRESS_ISR_ICU11)
+SSP_VECTOR_DEFINE(icu_irq_isr, ICU, IRQ11);
+#endif
+#endif
+static icu_instance_ctrl_t g_external_irqYA_ctrl;
+static const external_irq_cfg_t g_external_irqYA_cfg =
+{ .channel = 11,
+  .trigger = EXTERNAL_IRQ_TRIG_BOTH_EDGE,
+  .filter_enable = true,
+  .pclk_div = EXTERNAL_IRQ_PCLK_DIV_BY_64,
+  .autostart = true,
+  .p_callback = g_external_irqYA_callback,
+  .p_context = &g_external_irqYA,
+  .p_extend = NULL,
+  .irq_ipl = (0), };
+/* Instance structure to use this module. */
+const external_irq_instance_t g_external_irqYA =
+{ .p_ctrl = &g_external_irqYA_ctrl, .p_cfg = &g_external_irqYA_cfg, .p_api = &g_external_irq_on_icu };
+#if (0) != BSP_IRQ_DISABLED
 #if !defined(SSP_SUPPRESS_ISR_g_external_irqXB) && !defined(SSP_SUPPRESS_ISR_ICU13)
 SSP_VECTOR_DEFINE(icu_irq_isr, ICU, IRQ13);
 #endif

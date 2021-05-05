@@ -236,8 +236,9 @@ void stepHandler(struct motorController *motorBlock)
         err = g_ioport.p_api->pinWrite (motorBlock->stepPin, IOPORT_LEVEL_HIGH);
         motorBlock->stepState = IOPORT_LEVEL_HIGH;
 
-        if (motorBlock != motorBlockX)
+        if (motorBlock->encoderActive != 1)
         {
+            ///Without an active encoder, position must be tracked open-loop, via the step output.
             ///Increment or decrement the motor position by the stepSize
             if (motorBlock->dir == motorBlock->fwdDir)
             {

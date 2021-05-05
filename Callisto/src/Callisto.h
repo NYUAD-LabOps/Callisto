@@ -117,6 +117,7 @@ struct motorController
     long int offsetSteps;
 
     ///Used to retain the motor step size, in steps per mm.
+    char encoderActive;
     double stepsPerMM;
     double stepSize;
     double encoderMMPerPulse;

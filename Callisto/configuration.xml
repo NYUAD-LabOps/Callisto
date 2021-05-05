@@ -270,7 +270,7 @@
       <property id="module.el.nx.ipv6.address_global" value="2001:0:0:0:0:0:0:1"/>
       <property id="module.el.nx.ipv6.address_local" value="0:0:0:0:0:0:0:0"/>
       <property id="module.el.nx.ip.stack_size" value="4096"/>
-      <property id="module.el.nx.ip.priority" value="0"/>
+      <property id="module.el.nx.ip.priority" value="1"/>
       <property id="module.el.nx.ip.arp" value="module.el.nx.ip.arp.enable"/>
       <property id="module.el.nx.ip.arp_cache_size_units" value="module.el.nx.ip.arp_cache_size_units.bytes"/>
       <property id="module.el.nx.ip.arp_cache_size" value="520"/>
@@ -529,6 +529,46 @@
       <property id="module.driver.external_irq.p_callback" value="g_external_irqXB_callback"/>
       <property id="module.driver.external_irq.irq_ipl" value="board.icu.common.irq.priority0"/>
     </module>
+    <module id="module.driver.external_irq_on_icu.866427850">
+      <property id="module.driver.external_irq.name" value="g_external_irqYA"/>
+      <property id="module.driver.external_irq.channel" value="11"/>
+      <property id="module.driver.external_irq.trigger" value="module.driver.external_irq.trigger.trig_both_edge"/>
+      <property id="module.driver.external_irq.filter_enable" value="module.driver.external_irq.filter_enable.true"/>
+      <property id="module.driver.external_irq.pclk_div" value="module.driver.external_irq.pclk_div.pclk_div_by_64"/>
+      <property id="module.driver.external_irq.interrupt_enable" value="module.driver.external_irq.interrupt_enable.true"/>
+      <property id="module.driver.external_irq.p_callback" value="g_external_irqYA_callback"/>
+      <property id="module.driver.external_irq.irq_ipl" value="board.icu.common.irq.priority0"/>
+    </module>
+    <module id="module.driver.external_irq_on_icu.500893208">
+      <property id="module.driver.external_irq.name" value="g_external_irqYB"/>
+      <property id="module.driver.external_irq.channel" value="9"/>
+      <property id="module.driver.external_irq.trigger" value="module.driver.external_irq.trigger.trig_both_edge"/>
+      <property id="module.driver.external_irq.filter_enable" value="module.driver.external_irq.filter_enable.true"/>
+      <property id="module.driver.external_irq.pclk_div" value="module.driver.external_irq.pclk_div.pclk_div_by_64"/>
+      <property id="module.driver.external_irq.interrupt_enable" value="module.driver.external_irq.interrupt_enable.true"/>
+      <property id="module.driver.external_irq.p_callback" value="g_external_irqYB_callback"/>
+      <property id="module.driver.external_irq.irq_ipl" value="board.icu.common.irq.priority0"/>
+    </module>
+    <module id="module.driver.external_irq_on_icu.263011263">
+      <property id="module.driver.external_irq.name" value="g_external_irqAA"/>
+      <property id="module.driver.external_irq.channel" value="10"/>
+      <property id="module.driver.external_irq.trigger" value="module.driver.external_irq.trigger.trig_both_edge"/>
+      <property id="module.driver.external_irq.filter_enable" value="module.driver.external_irq.filter_enable.true"/>
+      <property id="module.driver.external_irq.pclk_div" value="module.driver.external_irq.pclk_div.pclk_div_by_64"/>
+      <property id="module.driver.external_irq.interrupt_enable" value="module.driver.external_irq.interrupt_enable.true"/>
+      <property id="module.driver.external_irq.p_callback" value="g_external_irqAA_callback"/>
+      <property id="module.driver.external_irq.irq_ipl" value="board.icu.common.irq.priority0"/>
+    </module>
+    <module id="module.driver.external_irq_on_icu.558626785">
+      <property id="module.driver.external_irq.name" value="g_external_irqAB"/>
+      <property id="module.driver.external_irq.channel" value="15"/>
+      <property id="module.driver.external_irq.trigger" value="module.driver.external_irq.trigger.trig_both_edge"/>
+      <property id="module.driver.external_irq.filter_enable" value="module.driver.external_irq.filter_enable.true"/>
+      <property id="module.driver.external_irq.pclk_div" value="module.driver.external_irq.pclk_div.pclk_div_by_64"/>
+      <property id="module.driver.external_irq.interrupt_enable" value="module.driver.external_irq.interrupt_enable.true"/>
+      <property id="module.driver.external_irq.p_callback" value="g_external_irqAB_callback"/>
+      <property id="module.driver.external_irq.irq_ipl" value="board.icu.common.irq.priority0"/>
+    </module>
     <context id="_hal.0">
       <stack module="module.driver.fmi_on_fmi.0"/>
       <stack module="module.driver.cgc_on_cgc.0"/>
@@ -551,6 +591,10 @@
       <stack module="module.driver.timer_on_gpt.1645537314"/>
       <stack module="module.driver.external_irq_on_icu.691094487"/>
       <stack module="module.driver.external_irq_on_icu.1257428907"/>
+      <stack module="module.driver.external_irq_on_icu.866427850"/>
+      <stack module="module.driver.external_irq_on_icu.500893208"/>
+      <stack module="module.driver.external_irq_on_icu.263011263"/>
+      <stack module="module.driver.external_irq_on_icu.558626785"/>
     </context>
     <context id="rtos.threadx.thread.1797549027">
       <property id="_symbol" value="CallistoMain"/>
@@ -649,7 +693,7 @@
       <property id="config.framework.sf_el_nx.macl1" value="0x0A0076B9"/>
       <property id="config.framework.sf_el_nx.num_rx_desc" value="8"/>
       <property id="config.framework.sf_el_nx.num_tx_desc" value="32"/>
-      <property id="config.framework.sf_el_nx.irq_ipl" value="board.icu.common.irq.priority0"/>
+      <property id="config.framework.sf_el_nx.irq_ipl" value="board.icu.common.irq.priority1"/>
       <property id="config.framework.sf_el_nx.monitor_method" value="config.framework.sf_el_nx.monitor_method.polling"/>
     </config>
     <config id="config.driver.cgc">

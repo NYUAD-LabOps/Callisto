@@ -23,6 +23,10 @@ void initMotors()
 {
     ssp_err_t err;
     motorInitX ();
+    err = g_external_irqXA.p_api->open (g_external_irqXA.p_ctrl, g_external_irqXA.p_cfg);
+    err = g_external_irqXB.p_api->open (g_external_irqXB.p_ctrl, g_external_irqXB.p_cfg);
+    motorBlockX->encoderActive = 1;
+
 
     motorBlockY->dirPin = IOPORT_PORT_04_PIN_11;
     motorBlockY->stepPin = IOPORT_PORT_04_PIN_15;
@@ -34,8 +38,9 @@ void initMotors()
     motorBlockY->g_timer_gpt_x = g_timer_gpt_7;
     err = g_external_irqY.p_api->open (g_external_irqY.p_ctrl, g_external_irqY.p_cfg);
     genericMotorInit (motorBlockY);
-    err = g_external_irqXA.p_api->open (g_external_irqXA.p_ctrl, g_external_irqXA.p_cfg);
-    err = g_external_irqXB.p_api->open (g_external_irqXB.p_ctrl, g_external_irqXB.p_cfg);
+    err = g_external_irqYA.p_api->open (g_external_irqYA.p_ctrl, g_external_irqYA.p_cfg);
+    err = g_external_irqYB.p_api->open (g_external_irqYB.p_ctrl, g_external_irqYB.p_cfg);
+    motorBlockY->encoderActive = 1;
 
     motorBlockA->dirPin = IOPORT_PORT_08_PIN_04;
     motorBlockA->stepPin = IOPORT_PORT_08_PIN_03;
@@ -46,6 +51,9 @@ void initMotors()
     motorBlockA->periodSet = g_timerA.p_api->periodSet;
     motorBlockA->g_timer_gpt_x = g_timerA;
     genericMotorInit (motorBlockA);
+    err = g_external_irqAA.p_api->open (g_external_irqAA.p_ctrl, g_external_irqAA.p_cfg);
+    err = g_external_irqAB.p_api->open (g_external_irqAB.p_ctrl, g_external_irqAB.p_cfg);
+    motorBlockA->encoderActive = 1;
 
     motorBlockZ->dirPin = IOPORT_PORT_04_PIN_10;
     motorBlockZ->stepPin = IOPORT_PORT_04_PIN_14;

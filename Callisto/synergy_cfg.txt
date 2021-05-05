@@ -72,9 +72,9 @@ Synergy Configuration
       P001 168 - - - - Disabled - - "ADC0: AN01; CMP0: IVCMP2; IRQ0: IRQ07" 
       P002 167 - - - - Disabled - - "ADC0: AN02; CMP0: IVCMP2; IRQ0: IRQ08" 
       P003 166 - - - - Disabled - - "ADC0: PGAVSS0" 
-      P004 165 GPIO GPIO26 - IRQ9-DS "Input mode" - - "ADC1: AN00; CMP0: IVCMP2; IRQ0: IRQ09" 
-      P005 164 GPIO GPIO25 - IRQ10-DS "Input mode" - - "ADC1: AN01; CMP0: IVCMP2; IRQ0: IRQ10" 
-      P006 163 GPIO GPIO24 - IRQ11-DS "Input mode" - - "ADC1: AN02; CMP0: IVCMP2; IRQ0: IRQ11" 
+      P004 165 IRQ0_IRQ09 - - IRQ9-DS "IRQ mode" - - "ADC1: AN00; CMP0: IVCMP2; IRQ0: IRQ09" 
+      P005 164 IRQ0_IRQ10 - - IRQ10-DS "IRQ mode" - - "ADC1: AN01; CMP0: IVCMP2; IRQ0: IRQ10" 
+      P006 163 IRQ0_IRQ11 - - IRQ11-DS "IRQ mode" - - "ADC1: AN02; CMP0: IVCMP2; IRQ0: IRQ11" 
       P007 162 - - - - Disabled - - "ADC1: PGAVSS0" 
       P008 161 IRQ0_IRQ12 - - IRQ12-DS "IRQ mode" - - "ADC0: AN03; IRQ0: IRQ12" 
       P009 160 IRQ0_IRQ13 - - IRQ13-DS "IRQ mode" - - "ADC0: AN04; IRQ0: IRQ13" 
@@ -147,7 +147,7 @@ Synergy Configuration
       P505 145 QSPI0_QIO3 Quad_SPI_QIO3 High None "Peripheral mode" CMOS None "ADC1: AN18; GPT13: GTIOCB; IRQ0: IRQ14; QSPI0: QIO3; SCI6: RXD_MISO; SCI6: SCL; SDHI1: DAT3" 
       P506 146 GPIO GPIO16 - None "Input mode" - None "ADC0: AN19; IRQ0: IRQ15; SCI6: SDA; SCI6: TXD_MOSI; SDHI1: CD" 
       P507 147 GPIO GPIO17 - - "Input mode" - None "ADC1: AN19; SCI5: CTS_RTS_SS; SDHI1: WP" 
-      P511 176 - - - - Disabled - - "CAN1: CRX; GPT0: GTIOCB; IIC2: SDA; IRQ0: IRQ15; PDC0: PCKO; SCI4: RXD_MISO; SCI4: SCL" 
+      P511 176 IRQ0_IRQ15 - - IRQ15 "IRQ mode" - - "CAN1: CRX; GPT0: GTIOCB; IIC2: SDA; IRQ0: IRQ15; PDC0: PCKO; SCI4: RXD_MISO; SCI4: SCL" 
       P512 175 - - - - Disabled - - "CAN1: CTX; GPT0: GTIOCA; IIC2: SCL; IRQ0: IRQ14; PDC0: VSYNC; SCI4: SDA; SCI4: TXD_MOSI" 
       P513 174 - - - - Disabled - - "GLCDC0: LCD_DATA16" 
       P600 122 GPIO GPIO11 Medium - "Output mode (Initial Low)" CMOS None "BUS0: RD; GLCDC0: LCD_DATA02" 
@@ -345,7 +345,7 @@ Synergy Configuration
     Channel 1 MAC Address Low Bits: 0x0A0076B9
     Number of Receive Buffer Descriptors: 8
     Number of Transmit Buffer Descriptors: 32
-    Ethernet Interrupt Priority: Priority 0 (highest)
+    Ethernet Interrupt Priority: Priority 1
     Link status monitoring method: PHY Polling
     
   Module "ADC Driver on r_adc"
@@ -676,6 +676,46 @@ Synergy Configuration
       Callback: g_external_irqXB_callback
       Pin Interrupt Priority: Priority 0 (highest)
       
+    Instance "g_external_irqYA External IRQ Driver on r_icu"
+      Name: g_external_irqYA
+      Channel: 11
+      Trigger: Both Edges
+      Digital Filtering: Enabled
+      Digital Filtering Sample Clock (Only valid when Digital Filtering is Enabled): PCLK / 64
+      Interrupt enabled after initialization: True
+      Callback: g_external_irqYA_callback
+      Pin Interrupt Priority: Priority 0 (highest)
+      
+    Instance "g_external_irqYB External IRQ Driver on r_icu"
+      Name: g_external_irqYB
+      Channel: 9
+      Trigger: Both Edges
+      Digital Filtering: Enabled
+      Digital Filtering Sample Clock (Only valid when Digital Filtering is Enabled): PCLK / 64
+      Interrupt enabled after initialization: True
+      Callback: g_external_irqYB_callback
+      Pin Interrupt Priority: Priority 0 (highest)
+      
+    Instance "g_external_irqAA External IRQ Driver on r_icu"
+      Name: g_external_irqAA
+      Channel: 10
+      Trigger: Both Edges
+      Digital Filtering: Enabled
+      Digital Filtering Sample Clock (Only valid when Digital Filtering is Enabled): PCLK / 64
+      Interrupt enabled after initialization: True
+      Callback: g_external_irqAA_callback
+      Pin Interrupt Priority: Priority 0 (highest)
+      
+    Instance "g_external_irqAB External IRQ Driver on r_icu"
+      Name: g_external_irqAB
+      Channel: 15
+      Trigger: Both Edges
+      Digital Filtering: Enabled
+      Digital Filtering Sample Clock (Only valid when Digital Filtering is Enabled): PCLK / 64
+      Interrupt enabled after initialization: True
+      Callback: g_external_irqAB_callback
+      Pin Interrupt Priority: Priority 0 (highest)
+      
   Thread "CallistoMain"
     Symbol: CallistoMain
     Name: CallistoMain
@@ -724,7 +764,7 @@ Synergy Configuration
       IPv6 Global Address: 2001:0:0:0:0:0:0:1
       IPv6 Link Local Address (All zeros means use MAC address): 0:0:0:0:0:0:0:0
       IP Helper Thread Stack Size (bytes): 4096
-      IP Helper Thread Priority: 0
+      IP Helper Thread Priority: 1
       ARP: Enable
       ARP cache storage units: Bytes
           ARP cache size (in storage units): 520

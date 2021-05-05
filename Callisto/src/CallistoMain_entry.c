@@ -17,6 +17,7 @@ void CallistoMain_entry(void)
     double tmpData;
     double extruderSpeed;
     double time;
+    double tmpPercentError;
     if (DEBUGGER)
         initialise_monitor_handles ();
     /* TODO: add your own code here */
@@ -79,6 +80,7 @@ void CallistoMain_entry(void)
 
             motorBlockX->freqSet = 0;
             motorBlockY->freqSet = 0;
+            motorBlockA->freqSet = 0;
             motorBlockZ->freqSet = 0;
             motorBlockT->freqSet = 0;
 
@@ -89,16 +91,39 @@ void CallistoMain_entry(void)
             extruderSpeed = ((machineGlobalsBlock->targetPosT - motorBlockT->pos) / time);
 
             ///Set motor velocities and wait until target is reached.
-            motorBlockX->targetSpeed = targetVelocityVector[0] / 2;
-            motorBlockY->targetSpeed = targetVelocityVector[1] / 2;
-            motorBlockZ->targetSpeed = targetVelocityVector[2] / 2;
-            motorBlockT->targetSpeed = extruderSpeed;
-
-            tx_thread_sleep(1);
-
             motorBlockX->targetSpeed = targetVelocityVector[0];
             motorBlockY->targetSpeed = targetVelocityVector[1];
+
+            ///Calculate the percent error position difference between Y and A assuming Y is correct, and adjust the speed of A accordingly.
+            tmpPercentError = (motorBlockA->pos - motorBlockY->pos) / motorBlockY->pos;
+            tmpPercentError *= targetVelocityVector[1];
+            tmpPercentError = fabs (tmpPercentError);
+
+//            if (targetVelocityVector[1] >= 0)
+//            {
+            if (motorBlockA->pos >= motorBlockY->pos)
+            {
+                motorBlockA->targetSpeed = (targetVelocityVector[1] - tmpPercentError);
+            }
+            else
+            {
+                motorBlockA->targetSpeed = (targetVelocityVector[1] + tmpPercentError);
+            }
+//            }
+//            else
+//            {
+//                if (motorBlockA->pos >= motorBlockY->pos)
+//                {
+//                    motorBlockA->targetSpeed = (targetVelocityVector[1] - tmpPercentError);
+//                }
+//                else
+//                {
+//                    motorBlockA->targetSpeed = (targetVelocityVector[1] + tmpPercentError);
+//                }
+//            }
+
             motorBlockZ->targetSpeed = targetVelocityVector[2];
+            motorBlockT->targetSpeed = extruderSpeed;
 
             ///Here the controller will need continuously check the current position against the target and re-calculate the motor speeds.
             /// This will allow the controller to respond to missed steps by adjusting the speed of the motors up or down to ensure the target position
@@ -112,11 +137,59 @@ void CallistoMain_entry(void)
 
                 ///Calculate magnitude.
                 lineVectorMag = sqrt (pow (lineVector[0], 2) + pow (lineVector[1], 2) + pow (lineVector[2], 2));
+
+                ///Calculate the latest unit vector.
+                newUnitVector[0] = (lineVector[0] / lineVectorMag);
+                newUnitVector[1] = (lineVector[1] / lineVectorMag);
+                newUnitVector[2] = (lineVector[2] / lineVectorMag);
+
+                ///The unit vector will provide the appropriate direction of each motor. Multiplying
+                /// the unit vector by the target speed will provide the target velocity vector.
+                ///Calculate the velocity vector.
+                targetVelocityVector[0] = (machineGlobalsBlock->targetSpeed * newUnitVector[0]);
+                targetVelocityVector[1] = (machineGlobalsBlock->targetSpeed * newUnitVector[1]);
+                targetVelocityVector[2] = (machineGlobalsBlock->targetSpeed * newUnitVector[2]);
+
+                if (targetVelocityVector[2] > 110.0)
+                {
+                    ///The z-axis movement speed is too high. Calculate the reduction factor and recalculate
+                    /// the velocity vector based on this.
+                    double reductionFactor = (110.0 / targetVelocityVector[2]);
+                    machineGlobalsBlock->targetSpeed *= reductionFactor;
+                    targetVelocityVector[0] *= reductionFactor;
+                    targetVelocityVector[1] *= reductionFactor;
+                    targetVelocityVector[2] *= reductionFactor;
+                }
+
+                ///Set motor velocities and wait until target is reached.
+                motorBlockX->targetSpeed = targetVelocityVector[0];
+                motorBlockY->targetSpeed = targetVelocityVector[1];
+
+                ///Calculate the percent error position difference between Y and A assuming Y is correct, and adjust the speed of A accordingly.
+                tmpPercentError = (motorBlockA->pos - motorBlockY->pos) / motorBlockY->pos;
+                tmpPercentError *= targetVelocityVector[1];
+                tmpPercentError = fabs (tmpPercentError);
+
+
+                if (motorBlockA->pos >= motorBlockY->pos)
+                {
+                    motorBlockA->targetSpeed = (targetVelocityVector[1] - tmpPercentError);
+                }
+                else
+                {
+                    motorBlockA->targetSpeed = (targetVelocityVector[1] + tmpPercentError);
+                }
+
+                motorBlockZ->targetSpeed = targetVelocityVector[2];
+
+                ///Re-calculate velocity vector and assign to motors.
                 tx_thread_relinquish ();
+//                tx_thread_sleep(10);
             }
 
             stopMotor (motorBlockX);
             stopMotor (motorBlockY);
+            stopMotor (motorBlockA);
             stopMotor (motorBlockZ);
             stopMotor (motorBlockT);
 
@@ -169,12 +242,32 @@ void ext_irqZ_callback(external_irq_callback_args_t *p_args)
 
 void g_external_irqXA_callback(external_irq_callback_args_t *p_args)
 {
-    encoderHandler(motorBlockX);
+    encoderHandler (motorBlockX);
 }
 
 void g_external_irqXB_callback(external_irq_callback_args_t *p_args)
 {
-    encoderHandler(motorBlockX);
+    encoderHandler (motorBlockX);
+}
+
+void g_external_irqYA_callback(external_irq_callback_args_t *p_args)
+{
+    encoderHandler (motorBlockY);
+}
+
+void g_external_irqYB_callback(external_irq_callback_args_t *p_args)
+{
+    encoderHandler (motorBlockY);
+}
+
+void g_external_irqAA_callback(external_irq_callback_args_t *p_args)
+{
+    encoderHandler (motorBlockA);
+}
+
+void g_external_irqAB_callback(external_irq_callback_args_t *p_args)
+{
+    encoderHandler (motorBlockA);
 }
 
 void gpt_4_callback(timer_callback_args_t *p_args)
@@ -422,4 +515,5 @@ void genericMotorInit(struct motorController *motorBlock)
     motorBlock->targetPosSteps = 0;
     motorBlock->speed = 0;
     motorBlock->frequency = 0;
+    motorBlock->encoderActive = 0;
 }

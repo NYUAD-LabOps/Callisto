@@ -8,7 +8,8 @@ void MotorC_entry(void)
     while (1)
     {
         motorHandler (motorBlockC);
+        tx_thread_relinquish();
         //        tx_thread_sleep (1);
-                tx_thread_suspend (tx_thread_identify ());
+//                tx_thread_suspend (tx_thread_identify ());
     }
 }

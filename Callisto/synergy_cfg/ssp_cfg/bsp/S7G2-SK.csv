@@ -13,13 +13,13 @@ IRQ0: IRQ07"
 CMP0: IVCMP2
 IRQ0: IRQ08"
 "P003","166","","","","","Disabled","","","ADC0: PGAVSS0"
-"P004","165","GPIO","GPIO26","","IRQ9-DS","Input mode","","","ADC1: AN00
+"P004","165","IRQ0_IRQ09","","","IRQ9-DS","IRQ mode","","","ADC1: AN00
 CMP0: IVCMP2
 IRQ0: IRQ09"
-"P005","164","GPIO","GPIO25","","IRQ10-DS","Input mode","","","ADC1: AN01
+"P005","164","IRQ0_IRQ10","","","IRQ10-DS","IRQ mode","","","ADC1: AN01
 CMP0: IVCMP2
 IRQ0: IRQ10"
-"P006","163","GPIO","GPIO24","","IRQ11-DS","Input mode","","","ADC1: AN02
+"P006","163","IRQ0_IRQ11","","","IRQ11-DS","IRQ mode","","","ADC1: AN02
 CMP0: IVCMP2
 IRQ0: IRQ11"
 "P007","162","","","","","Disabled","","","ADC1: PGAVSS0"
@@ -457,7 +457,7 @@ SDHI1: CD"
 "P507","147","GPIO","GPIO17","","","Input mode","","None","ADC1: AN19
 SCI5: CTS_RTS_SS
 SDHI1: WP"
-"P511","176","","","","","Disabled","","","CAN1: CRX
+"P511","176","IRQ0_IRQ15","","","IRQ15","IRQ mode","","","CAN1: CRX
 GPT0: GTIOCB
 IIC2: SDA
 IRQ0: IRQ15

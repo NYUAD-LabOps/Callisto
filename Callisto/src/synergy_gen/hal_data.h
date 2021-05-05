@@ -15,6 +15,26 @@ extern "C"
 {
 #endif
 /* External IRQ on ICU Instance. */
+extern const external_irq_instance_t g_external_irqAB;
+#ifndef g_external_irqAB_callback
+void g_external_irqAB_callback(external_irq_callback_args_t *p_args);
+#endif
+/* External IRQ on ICU Instance. */
+extern const external_irq_instance_t g_external_irqAA;
+#ifndef g_external_irqAA_callback
+void g_external_irqAA_callback(external_irq_callback_args_t *p_args);
+#endif
+/* External IRQ on ICU Instance. */
+extern const external_irq_instance_t g_external_irqYB;
+#ifndef g_external_irqYB_callback
+void g_external_irqYB_callback(external_irq_callback_args_t *p_args);
+#endif
+/* External IRQ on ICU Instance. */
+extern const external_irq_instance_t g_external_irqYA;
+#ifndef g_external_irqYA_callback
+void g_external_irqYA_callback(external_irq_callback_args_t *p_args);
+#endif
+/* External IRQ on ICU Instance. */
 extern const external_irq_instance_t g_external_irqXB;
 #ifndef g_external_irqXB_callback
 void g_external_irqXB_callback(external_irq_callback_args_t *p_args);

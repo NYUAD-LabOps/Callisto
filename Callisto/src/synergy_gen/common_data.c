@@ -149,7 +149,7 @@ void ip_init0(void)
     /* Create an IP instance. */
     g_ip0_err = nx_ip_create (&g_ip0, "g_ip0 IP Instance", IP_ADDRESS (192, 168, 10, 182),
                               IP_ADDRESS (255, 255, 255, 0), &g_packet_pool0, g_sf_el_nx, &g_ip0_stack_memory[0], 4096,
-                              0);
+                              1);
     if (NX_SUCCESS != g_ip0_err)
     {
         g_ip0_err_callback ((void *) &g_ip0, &g_ip0_err);

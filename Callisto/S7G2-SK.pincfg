@@ -133,7 +133,7 @@
   <v1:configSetting configurationId="p806.gpio_mode" altId="p806.gpio_mode.gpio_mode_out.low"/>
   <v1:configSetting configurationId="p706.gpio_mode" altId="p706.gpio_mode.gpio_mode_peripheral"/>
   <v1:configSetting configurationId="p106.gpio_mode" altId="p106.gpio_mode.gpio_mode_peripheral"/>
-  <v1:configSetting configurationId="p006.gpio_mode" altId="p006.gpio_mode.gpio_mode_in"/>
+  <v1:configSetting configurationId="p006.gpio_mode" altId="p006.gpio_mode.gpio_mode_irq"/>
   <v1:configSetting configurationId="p506.gpio_mode" altId="p506.gpio_mode.gpio_mode_in"/>
   <v1:configSetting configurationId="p406.gpio_mode" altId="p406.gpio_mode.gpio_mode_peripheral"/>
   <v1:configSetting configurationId="p702.gpio_drivecapacity" altId="p702.gpio_speed.gpio_speed_high"/>
@@ -432,7 +432,7 @@
   </v1:configSetting>
   <v1:configSetting configurationId="p404.gpio_mode" altId="p404.gpio_mode.gpio_mode_peripheral"/>
   <v1:configSetting configurationId="p601.gpio_drivecapacity" altId="p601.gpio_speed.gpio_speed_medium"/>
-  <v1:configSetting configurationId="p004.gpio_mode" altId="p004.gpio_mode.gpio_mode_in"/>
+  <v1:configSetting configurationId="p004.gpio_mode" altId="p004.gpio_mode.gpio_mode_irq"/>
   <v1:configSetting configurationId="p404.gpio_drivecapacity" altId="p404.gpio_speed.gpio_speed_medium"/>
   <v1:configSetting configurationId="p113" altId="p113.output.low"/>
   <v1:configSetting configurationId="p112" altId="p112.input"/>
@@ -479,12 +479,18 @@
     <v1:connectionSetting altId="dac0.da.p014"/>
   </v1:configSetting>
   <v1:configSetting configurationId="p010" altId="p010.input"/>
-  <v1:configSetting configurationId="p005.gpio_mode" altId="p005.gpio_mode.gpio_mode_in"/>
+  <v1:configSetting configurationId="p005.gpio_mode" altId="p005.gpio_mode.gpio_mode_irq"/>
   <v1:configSetting configurationId="p413.gpio_drivecapacity" altId="p413.gpio_speed.gpio_speed_low"/>
   <v1:configSetting configurationId="p000" altId="p000.input"/>
-  <v1:configSetting configurationId="p006" altId="p006.input"/>
-  <v1:configSetting configurationId="p005" altId="p005.input"/>
-  <v1:configSetting configurationId="p004" altId="p004.input"/>
+  <v1:configSetting configurationId="p006" altId="p006.irq0.irq11">
+    <v1:connectionSetting altId="irq0.irq11.p006"/>
+  </v1:configSetting>
+  <v1:configSetting configurationId="p005" altId="p005.irq0.irq10">
+    <v1:connectionSetting altId="irq0.irq10.p005"/>
+  </v1:configSetting>
+  <v1:configSetting configurationId="p004" altId="p004.irq0.irq09">
+    <v1:connectionSetting altId="irq0.irq09.p004"/>
+  </v1:configSetting>
   <v1:configSetting configurationId="p405.gpio_mode" altId="p405.gpio_mode.gpio_mode_peripheral"/>
   <v1:propertySetting propertyId="p108.symbolic_name" value="JTAG_TMS"/>
   <v1:propertySetting propertyId="p502.symbolic_name" value="Quad_SPI_QIO0"/>
@@ -496,7 +502,6 @@
   <v1:propertySetting propertyId="p703.symbolic_name" value="Ethernet_Controller_1_RMII_RMII1_RXD1"/>
   <v1:propertySetting propertyId="p613.symbolic_name" value="GPIO37"/>
   <v1:propertySetting propertyId="p700.symbolic_name" value="Ethernet_Controller_1_RMII_RMII1_TXD0"/>
-  <v1:propertySetting propertyId="p006.symbolic_name" value="GPIO24"/>
   <v1:propertySetting propertyId="p705.symbolic_name" value="Ethernet_Controller_1_RMII_RMII1_CRS_DV"/>
   <v1:propertySetting propertyId="p110.symbolic_name" value="JTAG_TDI"/>
   <v1:propertySetting propertyId="p105.symbolic_name" value="SCI8_TXD8_SDA8_MOSI8"/>
@@ -521,7 +526,6 @@
   <v1:propertySetting propertyId="p707.symbolic_name" value="SCI3_TXD3_SDA3_MOSI3"/>
   <v1:propertySetting propertyId="p113.symbolic_name" value="GPIO6"/>
   <v1:propertySetting propertyId="p010.symbolic_name" value="GPIO20"/>
-  <v1:propertySetting propertyId="p004.symbolic_name" value="GPIO26"/>
   <v1:propertySetting propertyId="p310.symbolic_name" value="GPIO33"/>
   <v1:propertySetting propertyId="p300.symbolic_name" value="JTAG_TCK"/>
   <v1:propertySetting propertyId="p605.symbolic_name" value="GPIO1"/>
@@ -529,7 +533,6 @@
   <v1:propertySetting propertyId="p704.symbolic_name" value="Ethernet_Controller_1_RMII_RMII1_RX_ER"/>
   <v1:propertySetting propertyId="p506.symbolic_name" value="GPIO16"/>
   <v1:propertySetting propertyId="p600.symbolic_name" value="GPIO11"/>
-  <v1:propertySetting propertyId="p005.symbolic_name" value="GPIO25"/>
   <v1:propertySetting propertyId="p602.symbolic_name" value="GPIO8"/>
   <v1:propertySetting propertyId="p104.symbolic_name" value="SCI8_RXD8_SCL8_MISO8"/>
   <v1:propertySetting propertyId="p404.symbolic_name" value="Ethernet_Controller_1_RMII_ET1_MDIO"/>
@@ -619,4 +622,21 @@
   <v1:configSetting configurationId="p008" altId="p008.irq0.irq12">
     <v1:connectionSetting altId="irq0.irq12.p008"/>
   </v1:configSetting>
+  <v1:configSetting configurationId="p511.gpio_irq" altId="p511.gpio_irq.gpio_irq_enabled"/>
+  <v1:configSetting configurationId="p511" altId="p511.irq0.irq15">
+    <v1:connectionSetting altId="irq0.irq15.p511"/>
+  </v1:configSetting>
+  <v1:configSetting configurationId="irq0.irq15" altId="irq0.irq15.p511">
+    <v1:connectionSetting altId="p511.irq0.irq15"/>
+  </v1:configSetting>
+  <v1:configSetting configurationId="irq0.irq10" altId="irq0.irq10.p005">
+    <v1:connectionSetting altId="p005.irq0.irq10"/>
+  </v1:configSetting>
+  <v1:configSetting configurationId="irq0.irq11" altId="irq0.irq11.p006">
+    <v1:connectionSetting altId="p006.irq0.irq11"/>
+  </v1:configSetting>
+  <v1:configSetting configurationId="irq0.irq09" altId="irq0.irq09.p004">
+    <v1:connectionSetting altId="p004.irq0.irq09"/>
+  </v1:configSetting>
+  <v1:configSetting configurationId="p511.gpio_mode" altId="p511.gpio_mode.gpio_mode_irq"/>
 </v1:pinSettings>
