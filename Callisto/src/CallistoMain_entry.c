@@ -14,7 +14,7 @@ void CallistoMain_entry(void)
     double targetVelocityVector[3], targetVelocityVectorMag;
     double startPos[3], newPos[3], targetPos[3];
     //    double targetSpeed;
-    double tmpData;
+    double tmpData, tmpTargetSpeed;
     double extruderSpeed;
     double time;
     double tmpPercentError;
@@ -43,9 +43,34 @@ void CallistoMain_entry(void)
         if (machineGlobalsBlock->newTarget)
         {
             machineGlobalsBlock->newTarget = 0;
-            targetPos[0] = machineGlobalsBlock->targetPosX;
-            targetPos[1] = machineGlobalsBlock->targetPosY;
-            targetPos[2] = machineGlobalsBlock->targetPosZ;
+            tmpTargetSpeed = machineGlobalsBlock->targetSpeed;
+
+            if (machineGlobalsBlock->targetPosX != ~0)
+            {
+                targetPos[0] = machineGlobalsBlock->targetPosX;
+            }
+            else
+            {
+                targetPos[0] = motorBlockX->pos;
+            }
+
+            if (machineGlobalsBlock->targetPosY != ~0)
+            {
+                targetPos[1] = machineGlobalsBlock->targetPosY;
+            }
+            else
+            {
+                targetPos[1] = motorBlockY->pos;
+            }
+
+            if (machineGlobalsBlock->targetPosZ != ~0)
+            {
+                targetPos[2] = machineGlobalsBlock->targetPosZ;
+            }
+            else
+            {
+                targetPos[2] = motorBlockZ->pos;
+            }
 
             ///We now have the target position and can calculate the line vector.
             lineVector[0] = (targetPos[0] - motorBlockX->pos);
@@ -63,16 +88,16 @@ void CallistoMain_entry(void)
             ///The unit vector will provide the appropriate direction of each motor. Multiplying
             /// the unit vector by the target speed will provide the target velocity vector.
             ///Calculate the velocity vector.
-            targetVelocityVector[0] = (machineGlobalsBlock->targetSpeed * newUnitVector[0]);
-            targetVelocityVector[1] = (machineGlobalsBlock->targetSpeed * newUnitVector[1]);
-            targetVelocityVector[2] = (machineGlobalsBlock->targetSpeed * newUnitVector[2]);
+            targetVelocityVector[0] = (tmpTargetSpeed * newUnitVector[0]);
+            targetVelocityVector[1] = (tmpTargetSpeed * newUnitVector[1]);
+            targetVelocityVector[2] = (tmpTargetSpeed * newUnitVector[2]);
 
-            if (targetVelocityVector[2] > 110.0)
+            if (fabs(targetVelocityVector[2]) > 110.0)
             {
                 ///The z-axis movement speed is too high. Calculate the reduction factor and recalculate
                 /// the velocity vector based on this.
                 double reductionFactor = (110.0 / targetVelocityVector[2]);
-                machineGlobalsBlock->targetSpeed *= reductionFactor;
+                tmpTargetSpeed *= reductionFactor;
                 targetVelocityVector[0] *= reductionFactor;
                 targetVelocityVector[1] *= reductionFactor;
                 targetVelocityVector[2] *= reductionFactor;
@@ -82,17 +107,18 @@ void CallistoMain_entry(void)
             motorBlockY->freqSet = 0;
             motorBlockA->freqSet = 0;
             motorBlockZ->freqSet = 0;
+            motorBlockB->freqSet = 0;
+            motorBlockC->freqSet = 0;
+            motorBlockD->freqSet = 0;
             motorBlockT->freqSet = 0;
 
             ///Get the movement time in minutes.
             time = lineVectorMag / machineGlobalsBlock->targetSpeed;
 
-            ///Perform extruder calculations.
-            extruderSpeed = ((machineGlobalsBlock->targetPosT - motorBlockT->pos) / time);
-
             ///Set motor velocities and wait until target is reached.
             motorBlockX->targetSpeed = targetVelocityVector[0];
             motorBlockY->targetSpeed = targetVelocityVector[1];
+            motorBlockA->targetSpeed = targetVelocityVector[1];
 
             ///Calculate the percent error position difference between Y and A assuming Y is correct, and adjust the speed of A accordingly.
             tmpPercentError = (motorBlockA->pos - motorBlockY->pos) / motorBlockY->pos;
@@ -101,14 +127,14 @@ void CallistoMain_entry(void)
 
 //            if (targetVelocityVector[1] >= 0)
 //            {
-            if (motorBlockA->pos >= motorBlockY->pos)
-            {
-                motorBlockA->targetSpeed = (targetVelocityVector[1] - tmpPercentError);
-            }
-            else
-            {
-                motorBlockA->targetSpeed = (targetVelocityVector[1] + tmpPercentError);
-            }
+//            if (motorBlockA->pos >= motorBlockY->pos)
+//            {
+//                motorBlockA->targetSpeed = (targetVelocityVector[1] - tmpPercentError);
+//            }
+//            else
+//            {
+//                motorBlockA->targetSpeed = (targetVelocityVector[1] + tmpPercentError);
+//            }
 //            }
 //            else
 //            {
@@ -123,81 +149,69 @@ void CallistoMain_entry(void)
 //            }
 
             motorBlockZ->targetSpeed = targetVelocityVector[2];
-            motorBlockT->targetSpeed = extruderSpeed;
+            motorBlockB->targetSpeed = targetVelocityVector[2];
+            motorBlockC->targetSpeed = targetVelocityVector[2];
+            motorBlockD->targetSpeed = targetVelocityVector[2];
+
+            if (machineGlobalsBlock->targetPosT != ~0)
+            {
+
+
+                ///Perform extruder calculations.
+                extruderSpeed = ((machineGlobalsBlock->targetPosT - motorBlockT->pos) / time);
+                motorBlockT->targetSpeed = extruderSpeed;
+            }
 
             ///Here the controller will need continuously check the current position against the target and re-calculate the motor speeds.
             /// This will allow the controller to respond to missed steps by adjusting the speed of the motors up or down to ensure the target position
             /// is reached by all axes at the same time, and the tolerance level is adhered to.
 
-            while (lineVectorMag > .1)
-            {
-                lineVector[0] = (targetPos[0] - motorBlockX->pos);
-                lineVector[1] = (targetPos[1] - motorBlockY->pos);
-                lineVector[2] = (targetPos[2] - motorBlockZ->pos);
-
-                ///Calculate magnitude.
-                lineVectorMag = sqrt (pow (lineVector[0], 2) + pow (lineVector[1], 2) + pow (lineVector[2], 2));
-
-                ///Calculate the latest unit vector.
-                newUnitVector[0] = (lineVector[0] / lineVectorMag);
-                newUnitVector[1] = (lineVector[1] / lineVectorMag);
-                newUnitVector[2] = (lineVector[2] / lineVectorMag);
-
-                ///The unit vector will provide the appropriate direction of each motor. Multiplying
-                /// the unit vector by the target speed will provide the target velocity vector.
-                ///Calculate the velocity vector.
-                targetVelocityVector[0] = (machineGlobalsBlock->targetSpeed * newUnitVector[0]);
-                targetVelocityVector[1] = (machineGlobalsBlock->targetSpeed * newUnitVector[1]);
-                targetVelocityVector[2] = (machineGlobalsBlock->targetSpeed * newUnitVector[2]);
-
-                if (targetVelocityVector[2] > 110.0)
-                {
-                    ///The z-axis movement speed is too high. Calculate the reduction factor and recalculate
-                    /// the velocity vector based on this.
-                    double reductionFactor = (110.0 / targetVelocityVector[2]);
-                    machineGlobalsBlock->targetSpeed *= reductionFactor;
-                    targetVelocityVector[0] *= reductionFactor;
-                    targetVelocityVector[1] *= reductionFactor;
-                    targetVelocityVector[2] *= reductionFactor;
-                }
-
-                ///Set motor velocities and wait until target is reached.
-                motorBlockX->targetSpeed = targetVelocityVector[0];
-                motorBlockY->targetSpeed = targetVelocityVector[1];
-
-                ///Calculate the percent error position difference between Y and A assuming Y is correct, and adjust the speed of A accordingly.
-                tmpPercentError = (motorBlockA->pos - motorBlockY->pos) / motorBlockY->pos;
-                tmpPercentError *= targetVelocityVector[1];
-                tmpPercentError = fabs (tmpPercentError);
+            ///Convert time from min to ms
+            time *= 60;
+            time *= 1000;
+            tx_thread_sleep(2*time);
 
 
-                if (motorBlockA->pos >= motorBlockY->pos)
-                {
-                    motorBlockA->targetSpeed = (targetVelocityVector[1] - tmpPercentError);
-                }
-                else
-                {
-                    motorBlockA->targetSpeed = (targetVelocityVector[1] + tmpPercentError);
-                }
-
-                motorBlockZ->targetSpeed = targetVelocityVector[2];
-
-                ///Re-calculate velocity vector and assign to motors.
-                tx_thread_relinquish ();
-//                tx_thread_sleep(10);
-            }
+//            while (lineVectorMag > .1)
+//            {
+//
+//
+//                ///Set motor velocities and wait until target is reached.
+//                motorBlockX->targetSpeed = targetVelocityVector[0];
+//                motorBlockY->targetSpeed = targetVelocityVector[1];
+//
+//                ///Calculate the percent error position difference between Y and A assuming Y is correct, and adjust the speed of A accordingly.
+//                tmpPercentError = (motorBlockA->pos - motorBlockY->pos) / motorBlockY->pos;
+//                tmpPercentError *= targetVelocityVector[1];
+//                tmpPercentError = fabs (tmpPercentError);
+//
+//                if (motorBlockA->pos >= motorBlockY->pos)
+//                {
+//                    motorBlockA->targetSpeed = (targetVelocityVector[1] - tmpPercentError);
+//                }
+//                else
+//                {
+//                    motorBlockA->targetSpeed = (targetVelocityVector[1] + tmpPercentError);
+//                }
+//                ///Re-calculate velocity vector and assign to motors.
+//                tx_thread_relinquish ();
+////                tx_thread_sleep(10);
+//            }
 
             stopMotor (motorBlockX);
             stopMotor (motorBlockY);
             stopMotor (motorBlockA);
             stopMotor (motorBlockZ);
+            stopMotor (motorBlockB);
+            stopMotor (motorBlockC);
+            stopMotor (motorBlockD);
             stopMotor (motorBlockT);
 
 //            machineGlobalsBlock->UDPTxBuff[0] = 'R';
 //            machineGlobalsBlock->UDPTxBuff[1] = 'D';
 //            machineGlobalsBlock->UDPTxBuff[2] = 'Y';
 //            UDPSend ();
-
+            machineGlobalsBlock->idle = 1;
         }
 
 //        if (DEBUG)

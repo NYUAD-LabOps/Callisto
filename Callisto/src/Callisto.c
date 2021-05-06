@@ -25,8 +25,10 @@ void initMotors()
     motorInitX ();
     err = g_external_irqXA.p_api->open (g_external_irqXA.p_ctrl, g_external_irqXA.p_cfg);
     err = g_external_irqXB.p_api->open (g_external_irqXB.p_ctrl, g_external_irqXB.p_cfg);
+    motorBlockX->encoderAPin = IOPORT_PORT_00_PIN_08;
+    motorBlockX->encoderBPin = IOPORT_PORT_00_PIN_09;
+    motorBlockX->encoderCWFWD = 0;
     motorBlockX->encoderActive = 1;
-
 
     motorBlockY->dirPin = IOPORT_PORT_04_PIN_11;
     motorBlockY->stepPin = IOPORT_PORT_04_PIN_15;
@@ -40,6 +42,9 @@ void initMotors()
     genericMotorInit (motorBlockY);
     err = g_external_irqYA.p_api->open (g_external_irqYA.p_ctrl, g_external_irqYA.p_cfg);
     err = g_external_irqYB.p_api->open (g_external_irqYB.p_ctrl, g_external_irqYB.p_cfg);
+    motorBlockY->encoderAPin = IOPORT_PORT_00_PIN_06;
+    motorBlockY->encoderBPin = IOPORT_PORT_00_PIN_04;
+    motorBlockY->encoderCWFWD = 1;
     motorBlockY->encoderActive = 1;
 
     motorBlockA->dirPin = IOPORT_PORT_08_PIN_04;
@@ -53,6 +58,9 @@ void initMotors()
     genericMotorInit (motorBlockA);
     err = g_external_irqAA.p_api->open (g_external_irqAA.p_ctrl, g_external_irqAA.p_cfg);
     err = g_external_irqAB.p_api->open (g_external_irqAB.p_ctrl, g_external_irqAB.p_cfg);
+    motorBlockA->encoderAPin = IOPORT_PORT_00_PIN_05;
+    motorBlockA->encoderBPin = IOPORT_PORT_05_PIN_11;
+    motorBlockA->encoderCWFWD = 0;
     motorBlockA->encoderActive = 1;
 
     motorBlockZ->dirPin = IOPORT_PORT_04_PIN_10;
@@ -209,6 +217,7 @@ void initGlobalsBlock()
     err = g_ioport.p_api->pinWrite (IOPORT_PORT_02_PIN_03, IOPORT_LEVEL_HIGH);
 
     err = g_ioport.p_api->pinWrite (IOPORT_PORT_06_PIN_00, IOPORT_LEVEL_LOW);
+    machineGlobalsBlock->idle = 1;
     machineGlobalsBlock->globalsInit = 1;
 
 }

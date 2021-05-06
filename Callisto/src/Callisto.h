@@ -122,6 +122,11 @@ struct motorController
     double stepSize;
     double encoderMMPerPulse;
     double stepsPerEncoderPulse;
+    int encoderAPin;
+    int encoderBPin;
+    ioport_level_t encoderAState;
+    ioport_level_t encoderBState;
+    char encoderCWFWD;
     /**Used to retain the integer value which corresponds to the GPIO pin being used for STEP output.
     This integer value is found in the #define values provided by Renesas headers.*/
     int stepPin;
@@ -208,6 +213,7 @@ struct toolBlock
     other items of worth may be build plate dimensions, number of extruders, etc...*/
 struct machineGlobals
 {
+    char idle;
     char globalsInit;
     char motorsInit;
     UINT receivingMsg;

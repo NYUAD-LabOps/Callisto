@@ -183,7 +183,8 @@ void processUDP(char *UDPRx)
                     motorBlockX->stepsPerMM = data;
                     motorBlockX->stepSize = (1.0 / data);
 
-                    motorBlockX->encoderMMPerPulse = ((STEPSPERREVOLUTION / motorBlockX->stepsPerMM) / (ENCODERPULSESPERREVOLUTION));
+                    motorBlockX->encoderMMPerPulse = ((STEPSPERREVOLUTION / motorBlockX->stepsPerMM)
+                            / (ENCODERPULSESPERREVOLUTION));
                     motorBlockX->stepsPerEncoderPulse = (motorBlockX->stepsPerMM * motorBlockX->encoderMMPerPulse);
                 break;
                 case 'y':
@@ -481,6 +482,20 @@ void processUDP(char *UDPRx)
             }
             UDPSend ();
         break;
+        case '6':
+            ///Master will request ready status.
+            machineGlobalsBlock->UDPTxBuff[0] = 't';
+            machineGlobalsBlock->UDPTxBuff[1] = 'x';
+            if (machineGlobalsBlock->idle == 0)
+            {
+                machineGlobalsBlock->UDPTxBuff[2] = '1';
+            }
+            else
+            {
+                machineGlobalsBlock->UDPTxBuff[2] = '0';
+            }
+            UDPSend ();
+        break;
         case 'a':
             ///Receive new IP assignment
             switch (UDPRx[1])
@@ -497,44 +512,16 @@ void processUDP(char *UDPRx)
             ///A new set of target positions and speed.
 
             memcpy (&data, (UDPRx + 2), 8);
-            if (data != ~0)
-            {
-                machineGlobalsBlock->targetPosX = data;
-            }
-            else
-            {
-                machineGlobalsBlock->targetPosX = motorBlockX->pos;
-            }
+            machineGlobalsBlock->targetPosX = data;
 
             memcpy (&data, (UDPRx + 10), 8);
-            if (data != ~0)
-            {
-                machineGlobalsBlock->targetPosY = data;
-            }
-            else
-            {
-                machineGlobalsBlock->targetPosY = motorBlockY->pos;
-            }
+            machineGlobalsBlock->targetPosY = data;
 
             memcpy (&data, (UDPRx + 18), 8);
-            if (data != ~0)
-            {
-                machineGlobalsBlock->targetPosZ = data;
-            }
-            else
-            {
-                machineGlobalsBlock->targetPosZ = motorBlockZ->pos;
-            }
+            machineGlobalsBlock->targetPosZ = data;
 
             memcpy (&data, (UDPRx + 26), 8);
-            if (data != ~0)
-            {
-                machineGlobalsBlock->targetPosT = data;
-            }
-            else
-            {
-                machineGlobalsBlock->targetPosT = motorBlockT->pos;
-            }
+            machineGlobalsBlock->targetPosT = data;
 
             memcpy (&data, (UDPRx + 34), 8);
             if (data != ~0)
@@ -542,8 +529,8 @@ void processUDP(char *UDPRx)
                 machineGlobalsBlock->targetSpeed = data;
             }
 
-
             machineGlobalsBlock->newTarget = 1;
+            machineGlobalsBlock->idle = 0;
         break;
         case 'c':
             ///Calibrate axis.
@@ -999,7 +986,7 @@ void processUDP(char *UDPRx)
             machineGlobalsBlock->UDPTxBuff[1] = 'x';
             if (motorBlockX->homing == 1 || motorBlockY->homing == 1 || motorBlockA->homing == 1
                     || motorBlockZ->homing == 1 || motorBlockB->homing == 1 || motorBlockC->homing == 1
-                    || motorBlockD->homing == 1)
+                    || motorBlockD->homing == 1 || machineGlobalsBlock->idle == 0)
             {
                 machineGlobalsBlock->UDPTxBuff[2] = '1';
             }

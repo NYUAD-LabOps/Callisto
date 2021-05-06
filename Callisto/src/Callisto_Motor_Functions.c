@@ -257,15 +257,137 @@ void stepHandler(struct motorController *motorBlock)
 
 void encoderHandler(struct motorController *motorBlock)
 {
-    if (motorBlock->dir == motorBlock->fwdDir)
-    {
-        motorBlock->pos += motorBlock->encoderMMPerPulse;
-        motorBlock->posSteps += motorBlock->stepsPerEncoderPulse;
+    ioport_level_t levelA, levelB;
+    ssp_err_t err;
 
-    }
-    else
+    err = g_ioport.p_api->pinRead (motorBlock->encoderAPin, &levelA);
+    err = g_ioport.p_api->pinRead (motorBlock->encoderBPin, &levelB);
+
+    if (levelA == IOPORT_LEVEL_LOW && levelB == IOPORT_LEVEL_LOW)
     {
-        motorBlock->pos -= motorBlock->encoderMMPerPulse;
-        motorBlock->posSteps -= motorBlock->stepsPerEncoderPulse;
+        if (motorBlock->encoderAState == IOPORT_LEVEL_HIGH && motorBlock->encoderBState == IOPORT_LEVEL_LOW)
+        {
+            ///CW
+            if (motorBlock->encoderCWFWD)
+            {
+                motorBlock->pos += motorBlock->encoderMMPerPulse;
+                motorBlock->posSteps += motorBlock->stepsPerEncoderPulse;
+            }
+            else
+            {
+                motorBlock->pos -= motorBlock->encoderMMPerPulse;
+                motorBlock->posSteps -= motorBlock->stepsPerEncoderPulse;
+            }
+        }
+        else if (motorBlock->encoderAState == IOPORT_LEVEL_LOW && motorBlock->encoderBState == IOPORT_LEVEL_HIGH)
+        {
+            ///CCW
+            if (!(motorBlock->encoderCWFWD))
+            {
+                motorBlock->pos += motorBlock->encoderMMPerPulse;
+                motorBlock->posSteps += motorBlock->stepsPerEncoderPulse;
+            }
+            else
+            {
+                motorBlock->pos -= motorBlock->encoderMMPerPulse;
+                motorBlock->posSteps -= motorBlock->stepsPerEncoderPulse;
+            }
+        }
     }
+    else if (levelA == IOPORT_LEVEL_LOW && levelB == IOPORT_LEVEL_HIGH)
+    {
+        if (motorBlock->encoderAState == IOPORT_LEVEL_LOW && motorBlock->encoderBState == IOPORT_LEVEL_LOW)
+        {
+            ///CW
+            if (motorBlock->encoderCWFWD)
+            {
+                motorBlock->pos += motorBlock->encoderMMPerPulse;
+                motorBlock->posSteps += motorBlock->stepsPerEncoderPulse;
+            }
+            else
+            {
+                motorBlock->pos -= motorBlock->encoderMMPerPulse;
+                motorBlock->posSteps -= motorBlock->stepsPerEncoderPulse;
+            }
+        }
+        else if (motorBlock->encoderAState == IOPORT_LEVEL_HIGH && motorBlock->encoderBState == IOPORT_LEVEL_HIGH)
+        {
+            ///CCW
+            if (!(motorBlock->encoderCWFWD))
+            {
+                motorBlock->pos += motorBlock->encoderMMPerPulse;
+                motorBlock->posSteps += motorBlock->stepsPerEncoderPulse;
+            }
+            else
+            {
+                motorBlock->pos -= motorBlock->encoderMMPerPulse;
+                motorBlock->posSteps -= motorBlock->stepsPerEncoderPulse;
+            }
+        }
+    }
+    else if (levelA == IOPORT_LEVEL_HIGH && levelB == IOPORT_LEVEL_LOW)
+    {
+        if (motorBlock->encoderAState == IOPORT_LEVEL_HIGH && motorBlock->encoderBState == IOPORT_LEVEL_HIGH)
+        {
+            ///CW
+            if (motorBlock->encoderCWFWD)
+            {
+                motorBlock->pos += motorBlock->encoderMMPerPulse;
+                motorBlock->posSteps += motorBlock->stepsPerEncoderPulse;
+            }
+            else
+            {
+                motorBlock->pos -= motorBlock->encoderMMPerPulse;
+                motorBlock->posSteps -= motorBlock->stepsPerEncoderPulse;
+            }
+        }
+        else if (motorBlock->encoderAState == IOPORT_LEVEL_LOW && motorBlock->encoderBState == IOPORT_LEVEL_LOW)
+        {
+            ///CCW
+            if (!(motorBlock->encoderCWFWD))
+            {
+                motorBlock->pos += motorBlock->encoderMMPerPulse;
+                motorBlock->posSteps += motorBlock->stepsPerEncoderPulse;
+            }
+            else
+            {
+                motorBlock->pos -= motorBlock->encoderMMPerPulse;
+                motorBlock->posSteps -= motorBlock->stepsPerEncoderPulse;
+            }
+        }
+    }
+    else if (levelA == IOPORT_LEVEL_HIGH && levelB == IOPORT_LEVEL_HIGH)
+    {
+        if (motorBlock->encoderAState == IOPORT_LEVEL_LOW && motorBlock->encoderBState == IOPORT_LEVEL_HIGH)
+        {
+            ///CW
+            if (motorBlock->encoderCWFWD)
+            {
+                motorBlock->pos += motorBlock->encoderMMPerPulse;
+                motorBlock->posSteps += motorBlock->stepsPerEncoderPulse;
+            }
+            else
+            {
+                motorBlock->pos -= motorBlock->encoderMMPerPulse;
+                motorBlock->posSteps -= motorBlock->stepsPerEncoderPulse;
+            }
+        }
+        else if (motorBlock->encoderAState == IOPORT_LEVEL_HIGH && motorBlock->encoderBState == IOPORT_LEVEL_LOW)
+        {
+            ///CCW
+            if (!(motorBlock->encoderCWFWD))
+            {
+                motorBlock->pos += motorBlock->encoderMMPerPulse;
+                motorBlock->posSteps += motorBlock->stepsPerEncoderPulse;
+            }
+            else
+            {
+                motorBlock->pos -= motorBlock->encoderMMPerPulse;
+                motorBlock->posSteps -= motorBlock->stepsPerEncoderPulse;
+            }
+        }
+    }
+
+    motorBlock->encoderAState = levelA;
+    motorBlock->encoderBState = levelB;
 }
