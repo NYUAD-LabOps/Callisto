@@ -43,7 +43,7 @@ void CallistoMain_entry(void)
         if (machineGlobalsBlock->newTarget)
         {
             machineGlobalsBlock->newTarget = 0;
-            tmpTargetSpeed = machineGlobalsBlock->targetSpeed;
+            tmpTargetSpeed = (2 * machineGlobalsBlock->targetSpeed); ///Temporarily doubling the speed.
 
             if (machineGlobalsBlock->targetPosX != ~0)
             {
@@ -92,11 +92,11 @@ void CallistoMain_entry(void)
             targetVelocityVector[1] = (tmpTargetSpeed * newUnitVector[1]);
             targetVelocityVector[2] = (tmpTargetSpeed * newUnitVector[2]);
 
-            if (fabs(targetVelocityVector[2]) > 110.0)
+            if (fabs (targetVelocityVector[2]) > 110.0)
             {
                 ///The z-axis movement speed is too high. Calculate the reduction factor and recalculate
                 /// the velocity vector based on this.
-                double reductionFactor = (110.0 / targetVelocityVector[2]);
+                double reductionFactor = fabs((110.0 / targetVelocityVector[2]));
                 tmpTargetSpeed *= reductionFactor;
                 targetVelocityVector[0] *= reductionFactor;
                 targetVelocityVector[1] *= reductionFactor;
@@ -113,7 +113,7 @@ void CallistoMain_entry(void)
             motorBlockT->freqSet = 0;
 
             ///Get the movement time in minutes.
-            time = lineVectorMag / machineGlobalsBlock->targetSpeed;
+            time = lineVectorMag / tmpTargetSpeed;
 
             ///Set motor velocities and wait until target is reached.
             motorBlockX->targetSpeed = targetVelocityVector[0];
@@ -156,10 +156,9 @@ void CallistoMain_entry(void)
             if (machineGlobalsBlock->targetPosT != ~0)
             {
 
-
                 ///Perform extruder calculations.
                 extruderSpeed = ((machineGlobalsBlock->targetPosT - motorBlockT->pos) / time);
-                motorBlockT->targetSpeed = extruderSpeed;
+                motorBlockT->targetSpeed = (extruderSpeed / 2.0);
             }
 
             ///Here the controller will need continuously check the current position against the target and re-calculate the motor speeds.
@@ -169,17 +168,39 @@ void CallistoMain_entry(void)
             ///Convert time from min to ms
             time *= 60;
             time *= 1000;
-            tx_thread_sleep(2*time);
+//            tx_thread_sleep (2 * time);
 
+            do
+            {
+                tx_thread_relinquish ();
+                lineVector[0] = (targetPos[0] - motorBlockX->pos);
+                lineVector[1] = (targetPos[1] - motorBlockY->pos);
+                lineVector[2] = (targetPos[2] - motorBlockZ->pos);
 
-//            while (lineVectorMag > .1)
-//            {
-//
-//
-//                ///Set motor velocities and wait until target is reached.
-//                motorBlockX->targetSpeed = targetVelocityVector[0];
-//                motorBlockY->targetSpeed = targetVelocityVector[1];
-//
+                ///Calculate magnitude.
+                lineVectorMag = sqrt (pow (lineVector[0], 2) + pow (lineVector[1], 2) + pow (lineVector[2], 2));
+
+                ///Calculate the latest unit vector.
+                newUnitVector[0] = (lineVector[0] / lineVectorMag);
+                newUnitVector[1] = (lineVector[1] / lineVectorMag);
+                newUnitVector[2] = (lineVector[2] / lineVectorMag);
+
+                ///The unit vector will provide the appropriate direction of each motor. Multiplying
+                /// the unit vector by the target speed will provide the target velocity vector.
+                ///Calculate the velocity vector.
+                targetVelocityVector[0] = (tmpTargetSpeed * newUnitVector[0]);
+                targetVelocityVector[1] = (tmpTargetSpeed * newUnitVector[1]);
+                targetVelocityVector[2] = (tmpTargetSpeed * newUnitVector[2]);
+
+                ///Set motor velocities and wait until target is reached.
+                motorBlockX->targetSpeed = targetVelocityVector[0];
+                motorBlockY->targetSpeed = targetVelocityVector[1];
+                motorBlockA->targetSpeed = targetVelocityVector[1];
+                motorBlockZ->targetSpeed = targetVelocityVector[2];
+                motorBlockB->targetSpeed = targetVelocityVector[2];
+                motorBlockC->targetSpeed = targetVelocityVector[2];
+                motorBlockD->targetSpeed = targetVelocityVector[2];
+
 //                ///Calculate the percent error position difference between Y and A assuming Y is correct, and adjust the speed of A accordingly.
 //                tmpPercentError = (motorBlockA->pos - motorBlockY->pos) / motorBlockY->pos;
 //                tmpPercentError *= targetVelocityVector[1];
@@ -193,10 +214,9 @@ void CallistoMain_entry(void)
 //                {
 //                    motorBlockA->targetSpeed = (targetVelocityVector[1] + tmpPercentError);
 //                }
-//                ///Re-calculate velocity vector and assign to motors.
-//                tx_thread_relinquish ();
-////                tx_thread_sleep(10);
-//            }
+
+            }
+            while (lineVectorMag > .1);
 
             stopMotor (motorBlockX);
             stopMotor (motorBlockY);
