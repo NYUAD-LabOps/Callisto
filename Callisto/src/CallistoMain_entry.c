@@ -96,13 +96,14 @@ void CallistoMain_entry(void)
             {
                 ///The z-axis movement speed is too high. Calculate the reduction factor and recalculate
                 /// the velocity vector based on this.
-                double reductionFactor = fabs((110.0 / targetVelocityVector[2]));
+                double reductionFactor = fabs ((110.0 / targetVelocityVector[2]));
                 tmpTargetSpeed *= reductionFactor;
                 targetVelocityVector[0] *= reductionFactor;
                 targetVelocityVector[1] *= reductionFactor;
                 targetVelocityVector[2] *= reductionFactor;
             }
 
+            ///Redundant
             motorBlockX->freqSet = 0;
             motorBlockY->freqSet = 0;
             motorBlockA->freqSet = 0;
@@ -118,35 +119,8 @@ void CallistoMain_entry(void)
             ///Set motor velocities and wait until target is reached.
             motorBlockX->targetSpeed = targetVelocityVector[0];
             motorBlockY->targetSpeed = targetVelocityVector[1];
-            motorBlockA->targetSpeed = targetVelocityVector[1];
-
-            ///Calculate the percent error position difference between Y and A assuming Y is correct, and adjust the speed of A accordingly.
-            tmpPercentError = (motorBlockA->pos - motorBlockY->pos) / motorBlockY->pos;
-            tmpPercentError *= targetVelocityVector[1];
-            tmpPercentError = fabs (tmpPercentError);
-
-//            if (targetVelocityVector[1] >= 0)
-//            {
-//            if (motorBlockA->pos >= motorBlockY->pos)
-//            {
-//                motorBlockA->targetSpeed = (targetVelocityVector[1] - tmpPercentError);
-//            }
-//            else
-//            {
-//                motorBlockA->targetSpeed = (targetVelocityVector[1] + tmpPercentError);
-//            }
-//            }
-//            else
-//            {
-//                if (motorBlockA->pos >= motorBlockY->pos)
-//                {
-//                    motorBlockA->targetSpeed = (targetVelocityVector[1] - tmpPercentError);
-//                }
-//                else
-//                {
-//                    motorBlockA->targetSpeed = (targetVelocityVector[1] + tmpPercentError);
-//                }
-//            }
+//            motorBlockA->targetSpeed = targetVelocityVector[1];
+            motorBlockA->targetSpeed = (targetPos[1] - motorBlockA->pos) / time;
 
             motorBlockZ->targetSpeed = targetVelocityVector[2];
             motorBlockB->targetSpeed = targetVelocityVector[2];
@@ -166,8 +140,8 @@ void CallistoMain_entry(void)
             /// is reached by all axes at the same time, and the tolerance level is adhered to.
 
             ///Convert time from min to ms
-            time *= 60;
-            time *= 1000;
+//            time *= 60;
+//            time *= 1000;
 //            tx_thread_sleep (2 * time);
 
             do
@@ -195,25 +169,15 @@ void CallistoMain_entry(void)
                 ///Set motor velocities and wait until target is reached.
                 motorBlockX->targetSpeed = targetVelocityVector[0];
                 motorBlockY->targetSpeed = targetVelocityVector[1];
-                motorBlockA->targetSpeed = targetVelocityVector[1];
+                //motorBlockA->targetSpeed = targetVelocityVector[1];
+
+                time = lineVectorMag / tmpTargetSpeed;
+                motorBlockA->targetSpeed = ((targetPos[1] - motorBlockA->pos) / time);
+
                 motorBlockZ->targetSpeed = targetVelocityVector[2];
                 motorBlockB->targetSpeed = targetVelocityVector[2];
                 motorBlockC->targetSpeed = targetVelocityVector[2];
                 motorBlockD->targetSpeed = targetVelocityVector[2];
-
-//                ///Calculate the percent error position difference between Y and A assuming Y is correct, and adjust the speed of A accordingly.
-//                tmpPercentError = (motorBlockA->pos - motorBlockY->pos) / motorBlockY->pos;
-//                tmpPercentError *= targetVelocityVector[1];
-//                tmpPercentError = fabs (tmpPercentError);
-//
-//                if (motorBlockA->pos >= motorBlockY->pos)
-//                {
-//                    motorBlockA->targetSpeed = (targetVelocityVector[1] - tmpPercentError);
-//                }
-//                else
-//                {
-//                    motorBlockA->targetSpeed = (targetVelocityVector[1] + tmpPercentError);
-//                }
 
             }
             while (lineVectorMag > .1);
