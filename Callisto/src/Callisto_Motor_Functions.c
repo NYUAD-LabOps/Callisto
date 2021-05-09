@@ -71,7 +71,7 @@ void motorHandler(struct motorController *motorBlock)
                 {
                     stopMotor (motorBlock);
                 }
-                else if (percentError (motorBlock->targetSpeed, motorBlock->speed) > MAXERROR)
+                else if (motorBlock->targetSpeed != motorBlock->speed)
                 {
                     ///The current speed is too far off target.
                     ///Calculate the step size and start the change.
