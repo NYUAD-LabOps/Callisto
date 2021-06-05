@@ -11,7 +11,8 @@
 #define MAXERROR 1.0 /// %
 #define MINPRECISION 1.0 /// %
 #define ACCEL 1
-#define MAXACCEL 500000 // mm/s^2
+#define MAXACCEL 2000 // mm/s^2
+#define ACCELPERTICK 120
 ///Number of steps between velocity adjustments.
 #define ACCEL_STEP_INTERVAL 10
 ///Number of equal divisions used for acceleration processes.

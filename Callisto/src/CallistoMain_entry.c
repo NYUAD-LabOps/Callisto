@@ -43,7 +43,7 @@ void CallistoMain_entry(void)
         if (machineGlobalsBlock->newTarget)
         {
             machineGlobalsBlock->newTarget = 0;
-            tmpTargetSpeed = (3 * machineGlobalsBlock->targetSpeed); ///Temporarily doubling the speed.
+            tmpTargetSpeed = (2 * machineGlobalsBlock->targetSpeed); ///Temporarily doubling the speed.
 
             if (machineGlobalsBlock->targetPosX != ~0)
             {
@@ -81,9 +81,18 @@ void CallistoMain_entry(void)
             lineVectorMag = sqrt (pow (lineVector[0], 2) + pow (lineVector[1], 2) + pow (lineVector[2], 2));
 
             ///Calculate the latest unit vector.
-            newUnitVector[0] = (lineVector[0] / lineVectorMag);
-            newUnitVector[1] = (lineVector[1] / lineVectorMag);
-            newUnitVector[2] = (lineVector[2] / lineVectorMag);
+            if (lineVectorMag != 0)
+            {
+                newUnitVector[0] = (lineVector[0] / lineVectorMag);
+                newUnitVector[1] = (lineVector[1] / lineVectorMag);
+                newUnitVector[2] = (lineVector[2] / lineVectorMag);
+            }
+            else
+            {
+                newUnitVector[0] = 0;
+                newUnitVector[1] = 0;
+                newUnitVector[2] = 0;
+            }
 
             ///The unit vector will provide the appropriate direction of each motor. Multiplying
             /// the unit vector by the target speed will provide the target velocity vector.
@@ -119,21 +128,25 @@ void CallistoMain_entry(void)
             ///Sync the motors before starting the movement.
             if (fabs (motorBlockA->pos - motorBlockY->pos) > .05)
             {
-                while (fabs (motorBlockA->pos - motorBlockY->pos) > .05)
+                if (motorBlockA->pos < motorBlockY->pos)
                 {
-                    if (motorBlockA->pos < motorBlockY->pos)
+                    motorBlockA->targetSpeed = machineGlobalsBlock->targetSpeed;
+                    while (motorBlockA->pos < motorBlockY->pos)
                     {
-                        motorBlockA->targetSpeed = tmpTargetSpeed;
-                    }
-                    else
-                    {
-                        motorBlockA->targetSpeed = 0;
-                        motorBlockA->targetSpeed -= tmpTargetSpeed;
+                        tx_thread_relinquish ();
                     }
                 }
-                tx_thread_relinquish ();
+                else
+                {
+                    motorBlockA->targetSpeed = 0;
+                    motorBlockA->targetSpeed -= machineGlobalsBlock->targetSpeed;
+                    while (motorBlockA->pos > motorBlockY->pos)
+                    {
+                        tx_thread_relinquish ();
+                    }
+                }
+                stopMotor (motorBlockA);
             }
-            stopMotor (motorBlockA);
             ///Set motor velocities and wait until target is reached.
             motorBlockX->targetSpeed = targetVelocityVector[0];
             motorBlockY->targetSpeed = targetVelocityVector[1];
@@ -147,10 +160,46 @@ void CallistoMain_entry(void)
 
             if (machineGlobalsBlock->targetPosT != ~0)
             {
+                if (lineVectorMag > 0)
+                {
+                    ///Perform extruder calculations.
+                    if (time != 0)
+                    {
+                        extruderSpeed = ((machineGlobalsBlock->targetPosT - motorBlockT->pos) / time);
+                    }
+                    else
+                    {
+                        extruderSpeed = 0;
+                    }
+                    if (fabs (extruderSpeed) > 10000)
+                    {
+                        ///Skip extrusion if speed is beyond upper limit
+//                        motorBlockT->targetSpeed = tmpTargetSpeed / 2;
+                    }
+                    else
+                    {
+                        motorBlockT->targetSpeed = (extruderSpeed / 2);
+                    }
 
-                ///Perform extruder calculations.
-                extruderSpeed = ((machineGlobalsBlock->targetPosT - motorBlockT->pos) / time);
-                motorBlockT->targetSpeed = (extruderSpeed / 2.0);
+                }
+                else
+                {
+                    ///There's no toolhead movement. This is just an extruder movement, probably a retraction.
+                    extruderSpeed = 0;
+                    if (machineGlobalsBlock->targetPosT > motorBlockT->pos)
+                    {
+                        extruderSpeed = (tmpTargetSpeed / 2);
+                    }
+                    else
+                    {
+                        extruderSpeed -= (tmpTargetSpeed / 2);
+                    }
+                    motorBlockT->targetSpeed = extruderSpeed;
+                    while (fabs (motorBlockT->pos - machineGlobalsBlock->targetPosT) > .1)
+                    {
+                        tx_thread_relinquish ();
+                    }
+                }
             }
 
             ///Here the controller will need continuously check the current position against the target and re-calculate the motor speeds.
@@ -166,28 +215,34 @@ void CallistoMain_entry(void)
             {
                 tx_thread_relinquish ();
 
-                if (fabs (motorBlockA->pos - motorBlockY->pos) > .05)
-                {
-                    stopMotor (motorBlockX);
-                    stopMotor (motorBlockY);
-                    stopMotor (motorBlockZ);
-                    stopMotor (motorBlockB);
-                    stopMotor (motorBlockC);
-                    stopMotor (motorBlockD);
-                    while (fabs (motorBlockA->pos - motorBlockY->pos) > .05)
-                    {
-                        if (motorBlockA->pos < motorBlockY->pos)
-                        {
-                            motorBlockA->targetSpeed = tmpTargetSpeed;
-                        }
-                        else
-                        {
-                            motorBlockA->targetSpeed = 0;
-                            motorBlockA->targetSpeed -= tmpTargetSpeed;
-                        }
-                        tx_thread_relinquish ();
-                    }
-                }
+//                if (fabs (motorBlockA->pos - motorBlockY->pos) > .05)
+//                {
+//                    stopMotor (motorBlockX);
+//                    stopMotor (motorBlockY);
+//                    stopMotor (motorBlockA);
+//                    stopMotor (motorBlockZ);
+//                    stopMotor (motorBlockB);
+//                    stopMotor (motorBlockC);
+//                    stopMotor (motorBlockD);
+//                    if (motorBlockA->pos < motorBlockY->pos)
+//                    {
+//                        motorBlockA->targetSpeed = machineGlobalsBlock->targetSpeed;
+//                        while (motorBlockA->pos < motorBlockY->pos)
+//                        {
+//                            tx_thread_relinquish ();
+//                        }
+//                    }
+//                    else
+//                    {
+//                        motorBlockA->targetSpeed = 0;
+//                        motorBlockA->targetSpeed -= machineGlobalsBlock->targetSpeed;
+//                        while (motorBlockA->pos > motorBlockY->pos)
+//                        {
+//                            tx_thread_relinquish ();
+//                        }
+//                    }
+//                    stopMotor (motorBlockA);
+//                }
 
                 lineVector[0] = (targetPos[0] - motorBlockX->pos);
                 lineVector[1] = (targetPos[1] - motorBlockY->pos);
@@ -197,9 +252,18 @@ void CallistoMain_entry(void)
                 lineVectorMag = sqrt (pow (lineVector[0], 2) + pow (lineVector[1], 2) + pow (lineVector[2], 2));
 
                 ///Calculate the latest unit vector.
-                newUnitVector[0] = (lineVector[0] / lineVectorMag);
-                newUnitVector[1] = (lineVector[1] / lineVectorMag);
-                newUnitVector[2] = (lineVector[2] / lineVectorMag);
+                if (lineVectorMag != 0)
+                {
+                    newUnitVector[0] = (lineVector[0] / lineVectorMag);
+                    newUnitVector[1] = (lineVector[1] / lineVectorMag);
+                    newUnitVector[2] = (lineVector[2] / lineVectorMag);
+                }
+                else
+                {
+                    newUnitVector[0] = 0;
+                    newUnitVector[1] = 0;
+                    newUnitVector[2] = 0;
+                }
 
                 ///The unit vector will provide the appropriate direction of each motor. Multiplying
                 /// the unit vector by the target speed will provide the target velocity vector.
@@ -213,14 +277,14 @@ void CallistoMain_entry(void)
                 motorBlockY->targetSpeed = targetVelocityVector[1];
                 motorBlockA->targetSpeed = targetVelocityVector[1];
 
-                time = lineVectorMag / tmpTargetSpeed;
-                if (machineGlobalsBlock->targetPosT != ~0)
-                {
-
-                    ///Perform extruder calculations.
-                    extruderSpeed = ((machineGlobalsBlock->targetPosT - motorBlockT->pos) / time);
-                    motorBlockT->targetSpeed = (extruderSpeed / 2.0);
-                }
+//                time = lineVectorMag / tmpTargetSpeed;
+//                if (machineGlobalsBlock->targetPosT != ~0)
+//                {
+//
+//                    ///Perform extruder calculations.
+//                    extruderSpeed = ((machineGlobalsBlock->targetPosT - motorBlockT->pos) / time);
+//                    motorBlockT->targetSpeed = (extruderSpeed / 2.0);
+//                }
 //                motorBlockA->targetSpeed = ((targetPos[1] - motorBlockA->pos) / time);
 
                 motorBlockZ->targetSpeed = targetVelocityVector[2];
@@ -240,6 +304,10 @@ void CallistoMain_entry(void)
             stopMotor (motorBlockD);
             stopMotor (motorBlockT);
 
+            if (machineGlobalsBlock->targetPosT != ~0)
+            {
+                motorBlockT->pos = machineGlobalsBlock->targetPosT;
+            }
 //            machineGlobalsBlock->UDPTxBuff[0] = 'R';
 //            machineGlobalsBlock->UDPTxBuff[1] = 'D';
 //            machineGlobalsBlock->UDPTxBuff[2] = 'Y';

@@ -52,7 +52,7 @@ void motorHandler(struct motorController *motorBlock)
             if (motorBlock->dir != motorBlock->targetDir)
             {
                 setDir (motorBlock, motorBlock->targetDir);
-//
+
 //                if (motorBlock->speed > motorBlock->targetJerkSpeed)
 //                {
 //                    ///The motor is moving too fast for a direction change.
@@ -74,10 +74,13 @@ void motorHandler(struct motorController *motorBlock)
                 else if (motorBlock->targetSpeed != motorBlock->speed)
                 {
                     ///The current speed is too far off target.
-                    ///Calculate the step size and start the change.
+
+
 
 //                    motorBlock->accelStepSize = (motorBlock->targetSpeed - motorBlock->speed) * 1.0;
+
                     ///Set the direction based on the sign of the speed
+                    /// Currently this is highly redundant.
                     if (motorBlock->targetSpeed > 0)
                     {
                         motorBlock->targetDir = motorBlock->fwdDir;
@@ -93,7 +96,18 @@ void motorHandler(struct motorController *motorBlock)
                             motorBlock->targetDir = IOPORT_LEVEL_HIGH;
                         }
                     }
-                    setSpeed (motorBlock, 0, motorBlock->targetSpeed, 0);
+
+                    if(fabs(motorBlock->targetSpeed - motorBlock->speed) <= ACCELPERTICK){
+                        setSpeed (motorBlock, 0, motorBlock->targetSpeed, 0);
+                    } else{
+                        /// Step it up or down by ACCELPERTICK and wait 1 tick
+                        if(motorBlock->speed < motorBlock->targetSpeed){
+                            setSpeed (motorBlock, 0, (motorBlock->speed + ACCELPERTICK), 0);
+                        } else{
+                            setSpeed (motorBlock, 0, (motorBlock->speed - ACCELPERTICK), 0);
+                        }
+                        tx_thread_sleep(1);
+                    }
                 }
             }
         }
@@ -108,11 +122,11 @@ void motorHandler(struct motorController *motorBlock)
 
         ///Let the motor run as long as the limit is inactive
         while (motorBlock->limit0State == IOPORT_LEVEL_HIGH)
-            tx_thread_sleep (1);
+            tx_thread_relinquish ();
 
         ///Reverse direction and let the motor run as long as the limit
         /// remains active.
-        if (motorBlock->dir == IOPORT_LEVEL_HIGH)
+        if (motorBlock->defaultDir == IOPORT_LEVEL_HIGH)
         {
             setDir (motorBlock, IOPORT_LEVEL_LOW);
         }
@@ -121,14 +135,14 @@ void motorHandler(struct motorController *motorBlock)
             setDir (motorBlock, IOPORT_LEVEL_HIGH);
         }
         while (motorBlock->limit0State == IOPORT_LEVEL_LOW)
-            tx_thread_sleep (1);
+            tx_thread_relinquish ();
 
         motorBlock->posSteps = 0;
         motorBlock->pos = 0;
 
         while (fabs (motorBlock->pos) < HOME_BACKOFF_DISTANCE)
         {
-            tx_thread_sleep (1);
+            tx_thread_relinquish ();
         }
 
         ///Stop the motor, reset position counter and homing flag.
@@ -165,14 +179,18 @@ void setSpeed(struct motorController *motorBlock, int freqSet, double targetSpee
     }
 
     ///Check if the motor GPT is already running. If not, it must be started.
-    if (motorBlock->frequency == 0 && tmpTargetFreq > 0)
+    if (tmpTargetFreq > 0)
     {
         ///Start motor GPT
         motorBlock->start (motorBlock->g_timer_gpt_x.p_ctrl);
+        err = motorBlock->periodSet (motorBlock->g_timer_gpt_x.p_ctrl, (2 * tmpTargetFreq), TIMER_UNIT_FREQUENCY_HZ);
+    } else{
+        motorBlock->stop (motorBlock->g_timer_gpt_x.p_ctrl);
     }
 
-    err = motorBlock->periodSet (motorBlock->g_timer_gpt_x.p_ctrl, (2 * tmpTargetFreq), TIMER_UNIT_FREQUENCY_HZ);
 
+
+//    timer_info_t
     motorBlock->frequency = tmpTargetFreq;
     motorBlock->speed = tmpTargetSpeed;
 
