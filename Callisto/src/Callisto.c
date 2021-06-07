@@ -47,25 +47,9 @@ void initMotors()
     motorBlockY->encoderCWFWD = 1;
     motorBlockY->encoderActive = 1;
 
-    motorBlockA->dirPin = IOPORT_PORT_08_PIN_04;
-    motorBlockA->stepPin = IOPORT_PORT_08_PIN_03;
-    motorBlockA->limit0Pin = IOPORT_PORT_04_PIN_08;
-    motorBlockA->start = g_timerA.p_api->start;
-    motorBlockA->stop = g_timerA.p_api->stop;
-    motorBlockA->dutyCycleSet = g_timerA.p_api->dutyCycleSet;
-    motorBlockA->periodSet = g_timerA.p_api->periodSet;
-    motorBlockA->g_timer_gpt_x = g_timerA;
-    genericMotorInit (motorBlockA);
-    err = g_external_irqAA.p_api->open (g_external_irqAA.p_ctrl, g_external_irqAA.p_cfg);
-    err = g_external_irqAB.p_api->open (g_external_irqAB.p_ctrl, g_external_irqAB.p_cfg);
-    motorBlockA->encoderAPin = IOPORT_PORT_00_PIN_05;
-    motorBlockA->encoderBPin = IOPORT_PORT_05_PIN_11;
-    motorBlockA->encoderCWFWD = 0;
-    motorBlockA->encoderActive = 1;
-
-    motorBlockZ->dirPin = IOPORT_PORT_04_PIN_10;
-    motorBlockZ->stepPin = IOPORT_PORT_04_PIN_14;
-    motorBlockZ->limit0Pin = IOPORT_PORT_02_PIN_03;
+    motorBlockZ->dirPin = IOPORT_PORT_08_PIN_04;
+    motorBlockZ->stepPin = IOPORT_PORT_08_PIN_03;
+    motorBlockZ->limit0Pin = IOPORT_PORT_04_PIN_08;
     motorBlockZ->start = g_timer_gpt_3.p_api->start;
     motorBlockZ->stop = g_timer_gpt_3.p_api->stop;
     motorBlockZ->dutyCycleSet = g_timer_gpt_3.p_api->dutyCycleSet;
@@ -73,6 +57,22 @@ void initMotors()
     motorBlockZ->g_timer_gpt_x = g_timer_gpt_3;
     err = g_external_irqZ.p_api->open (g_external_irqZ.p_ctrl, g_external_irqZ.p_cfg);
     genericMotorInit (motorBlockZ);
+    err = g_external_irqAA.p_api->open (g_external_irqAA.p_ctrl, g_external_irqAA.p_cfg);
+    err = g_external_irqAB.p_api->open (g_external_irqAB.p_ctrl, g_external_irqAB.p_cfg);
+    motorBlockZ->encoderAPin = IOPORT_PORT_00_PIN_05;
+    motorBlockZ->encoderBPin = IOPORT_PORT_05_PIN_11;
+    motorBlockZ->encoderCWFWD = 0;
+    motorBlockZ->encoderActive = 1;
+
+    motorBlockA->dirPin = IOPORT_PORT_04_PIN_10;
+    motorBlockA->stepPin = IOPORT_PORT_04_PIN_14;
+    motorBlockA->limit0Pin = IOPORT_PORT_02_PIN_03;
+    motorBlockA->start = g_timerA.p_api->start;
+    motorBlockA->stop = g_timerA.p_api->stop;
+    motorBlockA->dutyCycleSet = g_timerA.p_api->dutyCycleSet;
+    motorBlockA->periodSet = g_timerA.p_api->periodSet;
+    motorBlockA->g_timer_gpt_x = g_timerA;
+    genericMotorInit (motorBlockA);
 
     motorBlockB->dirPin = IOPORT_PORT_03_PIN_04;
     motorBlockB->stepPin = IOPORT_PORT_03_PIN_03;

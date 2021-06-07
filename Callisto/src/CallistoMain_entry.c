@@ -115,48 +115,48 @@ void CallistoMain_entry(void)
             ///Redundant
             motorBlockX->freqSet = 0;
             motorBlockY->freqSet = 0;
-            motorBlockA->freqSet = 0;
+//            motorBlockA->freqSet = 0;
             motorBlockZ->freqSet = 0;
-            motorBlockB->freqSet = 0;
-            motorBlockC->freqSet = 0;
-            motorBlockD->freqSet = 0;
+//            motorBlockB->freqSet = 0;
+//            motorBlockC->freqSet = 0;
+//            motorBlockD->freqSet = 0;
             motorBlockT->freqSet = 0;
 
             ///Get the movement time in minutes.
             time = lineVectorMag / tmpTargetSpeed;
 
             ///Sync the motors before starting the movement.
-            if (fabs (motorBlockA->pos - motorBlockY->pos) > .05)
-            {
-                if (motorBlockA->pos < motorBlockY->pos)
-                {
-                    motorBlockA->targetSpeed = machineGlobalsBlock->targetSpeed;
-                    while (motorBlockA->pos < motorBlockY->pos)
-                    {
-                        tx_thread_relinquish ();
-                    }
-                }
-                else
-                {
-                    motorBlockA->targetSpeed = 0;
-                    motorBlockA->targetSpeed -= machineGlobalsBlock->targetSpeed;
-                    while (motorBlockA->pos > motorBlockY->pos)
-                    {
-                        tx_thread_relinquish ();
-                    }
-                }
-                stopMotor (motorBlockA);
-            }
+//            if (fabs (motorBlockA->pos - motorBlockY->pos) > .05)
+//            {
+//                if (motorBlockA->pos < motorBlockY->pos)
+//                {
+//                    motorBlockA->targetSpeed = machineGlobalsBlock->targetSpeed;
+//                    while (motorBlockA->pos < motorBlockY->pos)
+//                    {
+//                        tx_thread_relinquish ();
+//                    }
+//                }
+//                else
+//                {
+//                    motorBlockA->targetSpeed = 0;
+//                    motorBlockA->targetSpeed -= machineGlobalsBlock->targetSpeed;
+//                    while (motorBlockA->pos > motorBlockY->pos)
+//                    {
+//                        tx_thread_relinquish ();
+//                    }
+//                }
+//                stopMotor (motorBlockA);
+//            }
             ///Set motor velocities and wait until target is reached.
             motorBlockX->targetSpeed = targetVelocityVector[0];
             motorBlockY->targetSpeed = targetVelocityVector[1];
-            motorBlockA->targetSpeed = targetVelocityVector[1];
+//            motorBlockA->targetSpeed = targetVelocityVector[1];
 //            motorBlockA->targetSpeed = (targetPos[1] - motorBlockA->pos) / time;
 
             motorBlockZ->targetSpeed = targetVelocityVector[2];
-            motorBlockB->targetSpeed = targetVelocityVector[2];
-            motorBlockC->targetSpeed = targetVelocityVector[2];
-            motorBlockD->targetSpeed = targetVelocityVector[2];
+//            motorBlockB->targetSpeed = targetVelocityVector[2];
+//            motorBlockC->targetSpeed = targetVelocityVector[2];
+//            motorBlockD->targetSpeed = targetVelocityVector[2];
 
             if (machineGlobalsBlock->targetPosT != ~0)
             {
@@ -272,10 +272,21 @@ void CallistoMain_entry(void)
                 targetVelocityVector[1] = (tmpTargetSpeed * newUnitVector[1]);
                 targetVelocityVector[2] = (tmpTargetSpeed * newUnitVector[2]);
 
+                if (fabs (targetVelocityVector[2]) > 110.0)
+                {
+                    ///The z-axis movement speed is too high. Calculate the reduction factor and recalculate
+                    /// the velocity vector based on this.
+                    double reductionFactor = fabs ((110.0 / targetVelocityVector[2]));
+                    tmpTargetSpeed *= reductionFactor;
+                    targetVelocityVector[0] *= reductionFactor;
+                    targetVelocityVector[1] *= reductionFactor;
+                    targetVelocityVector[2] *= reductionFactor;
+                }
+
                 ///Set motor velocities and wait until target is reached.
                 motorBlockX->targetSpeed = targetVelocityVector[0];
                 motorBlockY->targetSpeed = targetVelocityVector[1];
-                motorBlockA->targetSpeed = targetVelocityVector[1];
+//                motorBlockA->targetSpeed = targetVelocityVector[1];
 
 //                time = lineVectorMag / tmpTargetSpeed;
 //                if (machineGlobalsBlock->targetPosT != ~0)
@@ -288,20 +299,20 @@ void CallistoMain_entry(void)
 //                motorBlockA->targetSpeed = ((targetPos[1] - motorBlockA->pos) / time);
 
                 motorBlockZ->targetSpeed = targetVelocityVector[2];
-                motorBlockB->targetSpeed = targetVelocityVector[2];
-                motorBlockC->targetSpeed = targetVelocityVector[2];
-                motorBlockD->targetSpeed = targetVelocityVector[2];
+//                motorBlockB->targetSpeed = targetVelocityVector[2];
+//                motorBlockC->targetSpeed = targetVelocityVector[2];
+//                motorBlockD->targetSpeed = targetVelocityVector[2];
 
             }
             while (lineVectorMag > .05);
 
             stopMotor (motorBlockX);
             stopMotor (motorBlockY);
-            stopMotor (motorBlockA);
+//            stopMotor (motorBlockA);
             stopMotor (motorBlockZ);
-            stopMotor (motorBlockB);
-            stopMotor (motorBlockC);
-            stopMotor (motorBlockD);
+//            stopMotor (motorBlockB);
+//            stopMotor (motorBlockC);
+//            stopMotor (motorBlockD);
             stopMotor (motorBlockT);
 
             if (machineGlobalsBlock->targetPosT != ~0)
@@ -349,9 +360,9 @@ void ext_irqZ_callback(external_irq_callback_args_t *p_args)
 //    }
 
     limitHit (motorBlockZ);
-    limitHit (motorBlockB);
-    limitHit (motorBlockC);
-    limitHit (motorBlockD);
+//    limitHit (motorBlockB);
+//    limitHit (motorBlockC);
+//    limitHit (motorBlockD);
 
 }
 
@@ -377,12 +388,12 @@ void g_external_irqYB_callback(external_irq_callback_args_t *p_args)
 
 void g_external_irqAA_callback(external_irq_callback_args_t *p_args)
 {
-    encoderHandler (motorBlockA);
+    encoderHandler (motorBlockZ);
 }
 
 void g_external_irqAB_callback(external_irq_callback_args_t *p_args)
 {
-    encoderHandler (motorBlockA);
+    encoderHandler (motorBlockZ);
 }
 
 void gpt_4_callback(timer_callback_args_t *p_args)

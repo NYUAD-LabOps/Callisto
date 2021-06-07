@@ -193,7 +193,7 @@ void processUDP(char *UDPRx)
                     motorBlockY->stepsPerMM = data;
                     motorBlockY->stepSize = (1.0 / data);
                     motorBlockY->encoderMMPerPulse = ((STEPSPERREVOLUTION / data) / (ENCODERPULSESPERREVOLUTION));
-                    motorBlockX->stepsPerEncoderPulse = (motorBlockY->stepsPerMM * motorBlockY->encoderMMPerPulse);
+                    motorBlockY->stepsPerEncoderPulse = (motorBlockY->stepsPerMM * motorBlockY->encoderMMPerPulse);
                 break;
                 case 'a':
                     memcpy (&data, (UDPRx + 2), 8);
@@ -201,13 +201,15 @@ void processUDP(char *UDPRx)
                     motorBlockA->stepsPerMM = data;
                     motorBlockA->stepSize = (1.0 / data);
                     motorBlockA->encoderMMPerPulse = ((STEPSPERREVOLUTION / data) / (ENCODERPULSESPERREVOLUTION));
-                    motorBlockX->stepsPerEncoderPulse = (motorBlockA->stepsPerMM * motorBlockA->encoderMMPerPulse);
+                    motorBlockA->stepsPerEncoderPulse = (motorBlockA->stepsPerMM * motorBlockA->encoderMMPerPulse);
                 break;
                 case 'z':
                     memcpy (&data, (UDPRx + 2), 8);
 
                     motorBlockZ->stepsPerMM = data;
                     motorBlockZ->stepSize = (1.0 / data);
+                    motorBlockZ->encoderMMPerPulse = ((STEPSPERREVOLUTION / data) / (ENCODERPULSESPERREVOLUTION));
+                    motorBlockZ->stepsPerEncoderPulse = (motorBlockZ->stepsPerMM * motorBlockZ->encoderMMPerPulse);
                 break;
                 case 'b':
                     memcpy (&data, (UDPRx + 2), 8);
